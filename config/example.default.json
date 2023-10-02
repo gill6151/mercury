@@ -8,7 +8,10 @@
         ],
         "nickname": "mercury",
         "username": "mercury",
-        "realname": "git.supernets.org/hogwart7/mercury"
+        "realname": "git.supernets.org/hogwart7/mercury",
+        "autorejoin": "true",
+        "floodprotection": "false",
+        "floodprotectiondelay": "0"
     },
     "feed": {
         "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",

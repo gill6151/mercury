@@ -8,22 +8,22 @@ const { Worker } = require('worker_threads');
 var connconfig = {
     server: config.get('irc.server'),
     port: config.get('irc.port'),
-    SSL: config.get('irc.port'),
+    SSL: config.get('irc.ssl'),
     channels: config.get('irc.channels'),
     botName: config.get('irc.nickname'),
     userName: config.get('irc.username'),
     realName: config.get('irc.realname')
 };
 
-var bot = new irc.Client(connconfig.server, connconfig.botName, {
-    channels: connconfig.channels,
-    secure: connconfig.SSL,
-    port: connconfig.port,
-    autoRejoin: true,
-    userName: connconfig.userName,
-    realName: connconfig.realName,
-    floodProtection: false,
-    floodProtectionDelay: 0
+var bot = new irc.Client(config.get('irc.server'), config.get('irc.nickname'), {
+    channels: config.get('irc.channels'),
+    secure: config.get('irc.ssl'),
+    port: config.get('irc.port'),
+    autoRejoin: config.get('irc.autorejoin'),
+    userName: config.get('irc.username'),
+    realName: config.get('irc.realname'),
+    floodProtection: config.get('irc.floodprotection'),
+    floodProtectionDelay: config.get('irc.floodprotectiondelay')
 });
 
 const timer = ms => new Promise(res => setTimeout(res, ms))
