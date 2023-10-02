@@ -27,13 +27,15 @@
         "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",
         "body_max_chars": "200",
         "time_format": "DD MMM YYYY HH:mm:ss ZZ",
-        "timezone": "Pacific/Auckland"
+        "timezone": "Pacific/Auckland",
+        "default_amount": "5"
     },
     "twitter": {
         "nitter_instances": [
             "nitter.1d4.us",
             "nitter.it",
             "nitter.pufe.org"
-        ]
+        ],
+        "default_amount": "5"
     }
 }

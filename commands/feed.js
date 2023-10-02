@@ -50,8 +50,8 @@ async function fetchFeed(feedURL, n) {
         var n = newFeed.items.length;
         content.push(warningMsg+" Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
     } else if (n < 1) {
-        var n = 5
-        content.push(warningMsg+" You requested a number less than 1. Reverting to 5");
+        var n = config.feed.default_amount
+        content.push(warningMsg+" You requested a number less than 1. Reverting to default ("+config.feed.default_amount+")");
     }
     //for (let i = 0; i < newFeed.items.length; i++) {
     for (let i = 0; i < n; i++) {

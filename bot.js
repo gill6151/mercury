@@ -43,7 +43,7 @@ async function feed(chan, provfeed, n) {
         return;
     }
     if (n === undefined) {
-        var n = 5;
+        var n = config.feed.default_amount;
     }
     const worker = new Worker('./commands/feed.js', { 
         workerData: {
@@ -63,7 +63,7 @@ async function twitter(chan, provfeed, n) {
         return;
     }
     if (n === undefined) {
-        var n = 5;
+        var n = config.twitter.default_amount;
     }
     const worker = new Worker('./commands/twitter.js', { 
         workerData: {
