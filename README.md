@@ -8,14 +8,14 @@ This bot is not completed, expect bugs/crashes/errors. Use in production is disa
 
 ## Commands
 
-- `m!feed [USER/FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)
+- `m!feed [USER/FEED/ALIAS] [ENTRIES]` - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)
 - `m!twitter [USER] [ENTRIES]` - Return the last x amount of tweets from a particular user.
 - `m!opt [CATEGORY] [OPTION] [VALUE]` - Control bot options, see wiki for info on usage.
 
 ## Deployment
 
 1. Install Docker (required) and Docker Compose (optional, but strongly recommended, this guide assumes you have it)
-2. Rename `config/example.default.json` to `config/default.json` and modify it accordingly. A list of variables and their descriptions can be found in this repos wiki.
+2. Rename `config/example.default.json` to `config/default.json` and modify it accordingly. A list of variables and their descriptions can be found in this repos wiki. You do not need to do anything with `example.usersettings.json` unless you wish to predefine settings prior to the bots first start, the usersettings file will be made when any options are set at runtime.
 3. Run `docker compose up` to begin. Append `-d` to start in the background and `--build` if you make any changes to any files.
 
 ## Support

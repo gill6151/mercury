@@ -1,4 +1,5 @@
 var config = require('./config/default.json');
+var uconfig = require('./config/usersettings.json');
 var irc = require("irc");
 var fs = require("fs");
 var readline = require('readline');
@@ -43,13 +44,13 @@ async function help(chan, sub) {
         bot.say(chan, '/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
         bot.say(chan, '                                    /____/   ')
         bot.say(chan, 'Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
-        bot.say(chan, 'm!feed [USER/FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
+        bot.say(chan, 'm!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
         bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
         bot.say(chan, "m!opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
     }
 }
 
-async function opt(chan, user, setting, setting2, value) {
+async function opt(chan, user, setting, setting2, value, value2) {
     //if (provfeed === undefined) {
     //    bot.say(chan, errorMsg+" No feed has been provided.")
     //    return;
@@ -62,7 +63,8 @@ async function opt(chan, user, setting, setting2, value) {
             user,
             setting,
             setting2,
-            value
+            value,
+            value2
         }
     });
     worker.once('message', (string) => {
@@ -81,19 +83,8 @@ async function feed(chan, nick, provfeed, n) {
     if (n === undefined) {
         var n = config.feed.default_amount;
     }
-    if (isValidUrl(provfeed) === false) {
-        const worker = new Worker('./commands/feed-list.js', { 
-            workerData: {
-                provfeed,
-                n,
-                nick
-            }
-        });
-        worker.once('message', (string) => {
-            console.log('Received output from feed-list worker, posting.');
-            bot.say(chan, string);
-        });
-    } else {
+
+    if (isValidUrl(provfeed) === true) {
         const worker = new Worker('./commands/feed-preset.js', { 
             workerData: {
                 provfeed,
@@ -103,6 +94,39 @@ async function feed(chan, nick, provfeed, n) {
         worker.once('message', (string) => {
             console.log('Received output from feed-preset worker, posting.');
             bot.say(chan, string);
+            return;
+        });
+    } else if (provfeed === nick) {
+        if ( uconfig[nick] !== undefined ) {
+            const worker = new Worker('./commands/feed-list.js', { 
+                workerData: {
+                    provfeed,
+                    n,
+                    nick
+                }
+            });
+            worker.once('message', (string) => {
+                console.log('Received output from feed-list worker, posting.');
+                bot.say(chan, string);
+                return;
+            });
+        } else {
+            bot.say(chan, "You have no saved feeds")
+            return;
+        }
+    } else if (uconfig[nick].alias !== undefined ) {
+        var provfeed = uconfig[nick].alias[provfeed]
+        const worker = new Worker('./commands/feed-preset.js', { 
+            workerData: {
+                provfeed,
+                n,
+                nick
+            }
+        });
+        worker.once('message', (string) => {
+            console.log('Received output from feed-list worker, posting.');
+            bot.say(chan, string);
+            return;
         });
     }
 }
@@ -136,7 +160,7 @@ bot.addListener('message', function(nick, to, text, from) {
     } else if (args[0] === config.irc.prefix+'twitter') {
         twitter(to, args[1], args[2])
     } else if (args[0] === config.irc.prefix+'opt') {
-        opt(to, nick, args[1], args[2], args[3])
+        opt(to, nick, args[1], args[2], args[3], args[4])
     }
 });
 

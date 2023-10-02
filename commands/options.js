@@ -1,14 +1,13 @@
 const config = require('../config/default.json')
 const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-const { user, setting, setting2, value } = workerData;
+const { user, setting, setting2, value, value2 } = workerData;
 const fs = require('fs-extra')
 let Parser = require('rss-parser');
 let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},
 });
 const editJsonFile = require("edit-json-file");
-const { getDefaultHighWaterMark } = require('stream');
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
@@ -42,8 +41,10 @@ function errorMessage(error, code, extra) {
 
 async function testFeed(feedURL) {
     try {
+        console.log('Testing feed')
         var feed = await parser.parseURL(feedURL);
     } catch (e) {
+        console.log(e)
         errorMessage(e, "INVALID", feedURL);
     }
     console.log(feed)
@@ -80,6 +81,34 @@ async function feed(nick, setting, value) {
     }
 }
 
+async function alias(setting, value, url, nick) {
+    if (setting === 'add') {
+        await testFeed(url);
+        var file = editJsonFile('/home/node/app/config/usersettings.json');
+        file.set(nick+'.alias.'+value, url);
+        file.save();
+        sendUpstream('Alias added ('+value+' ==> '+url+')')
+    }
+    if (setting === 'del') {
+        var file = editJsonFile('/home/node/app/config/usersettings.json');
+        file.set(nick+'.alias.'+value, "");
+        file.save();
+        sendUpstream('Alias removed ('+value+' ==> BTFO\'d)')
+    }
+    if (setting === 'list') {
+        content = [];
+        var obj = uconfig[nick].alias
+        console.log(obj)
+        for (const [key, val] of Object.entries(obj)) {
+            if (val !== "") {
+                content.push(key + ' ==> '+val)
+            }
+        };
+        var output = content.join("\n")
+        sendUpstream(output);
+    }
+}
+
 async function get(setting) {
     var file = editJsonFile('/home/node/app/config/default.json')
     console.log(file.get(setting));
@@ -92,4 +121,6 @@ if (setting === 'feed') {
     feed(user, setting2)
 } else if (setting === 'get') {
     get(setting2);
+} else if(setting === 'alias') {
+    alias(setting2, value, value2, user)
 }
