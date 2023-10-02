@@ -45,7 +45,7 @@ async function help(chan, sub) {
         bot.say(chan, 'Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
         bot.say(chan, 'm!feed [USER/FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
         bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
-        bot.say(chan, "m!set [CATEGORY] [OPTION] [VALUE] - Control bot settings, see wiki for info on usage.")
+        bot.say(chan, "m!opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
     }
 }
 

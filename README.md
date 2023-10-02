@@ -10,7 +10,7 @@ This bot is not completed, expect bugs/crashes/errors. Use in production is disa
 
 - `m!feed [USER/FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)
 - `m!twitter [USER] [ENTRIES]` - Return the last x amount of tweets from a particular user.
-- `m!set [CATEGORY] [OPTION] [VALUE]` - Control bot settings, see wiki for info on usage.
+- `m!opt [CATEGORY] [OPTION] [VALUE]` - Control bot options, see wiki for info on usage.
 
 ## Deployment
 
