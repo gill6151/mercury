@@ -16,8 +16,8 @@ var bot = new irc.Client(config.irc.server, config.irc.nickname, {
     autoRejoin: config.irc.autorejoin,
     userName: config.irc.username,
     realName: config.irc.realname,
-    floodProtection: config.irc.floodprotection,
-    floodProtectionDelay: config.irc.floodprotectiondelay
+    floodProtection: config.floodprotect.flood_protection,
+    floodProtectionDelay: config.floodprotect.flood_protection_delay
 });
 
 const msgTimeout = new Set();
@@ -131,7 +131,7 @@ bot.addListener('message', function(nick, to, text, from) {
             msgTimeoutMsg.add("yes");
             setTimeout(() => {
                 msgTimeoutMsg.delete("yes");
-            }, config.misc.command_listen_timeout)           
+            }, config.floodprotect.command_listen_timeout)           
         }
     } else {
         var args = text.split(' ');
@@ -147,7 +147,7 @@ bot.addListener('message', function(nick, to, text, from) {
         msgTimeout.add(to);
         setTimeout(() => {
             msgTimeout.delete(to);
-        }, config.misc.command_listen_timeout)
+        }, config.floodprotect.command_listen_timeout)
     }
 });
 

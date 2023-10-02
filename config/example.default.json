@@ -10,9 +10,12 @@
         "username": "mercury",
         "realname": "git.supernets.org/hgw/mercury",
         "autorejoin": "true",
-        "floodprotection": "false",
-        "floodprotectiondelay": "0",
         "prefix": "m!"
+    },
+    "floodprotect": {
+        "flood_protection": "false",
+        "flood_protection_delay": "0",
+        "command_listen_timeout": "2500"
     },
     "errorhandling": {
         "error_logging": "true",
@@ -47,8 +50,7 @@
     },
     "misc": {
         "display_help_logo": "true",
-        "logging": "true",
-        "command_listen_timeout": "2500"
+        "logging": "true"
     },
     "motd": {
         "enable": "true",
