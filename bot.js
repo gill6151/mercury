@@ -22,6 +22,16 @@ var bot = new irc.Client(config.irc.server, config.irc.nickname, {
 
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
+const isValidUrl = urlString=> {
+    var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // validate domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // validate OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
+    '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+    return !!urlPattern.test(urlString);
+}
+
 async function help(chan, sub) {
     if (sub === undefined) {
         var sub = "default"
@@ -32,9 +42,10 @@ async function help(chan, sub) {
         bot.say(chan, ' / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / ')
         bot.say(chan, '/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
         bot.say(chan, '                                    /____/   ')
-        bot.say(chan, 'Mercury - https://git.supernets.org/hogwart7/mercury')
-        bot.say(chan, 'm!feed [FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed')
+        bot.say(chan, 'Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
+        bot.say(chan, 'm!feed [USER/FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
         bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
+        bot.say(chan, "m!set [CATEGORY] [OPTION] [VALUE] - Control bot settings, see wiki for info on usage.")
     }
 }
 
@@ -55,29 +66,45 @@ async function opt(chan, user, setting, setting2, value) {
         }
     });
     worker.once('message', (string) => {
-        console.log('Received output from last5 worker, posting.');
+        console.log('Received output from options worker, posting.');
         bot.say(chan, string);
     });
 }
 
-async function feed(chan, provfeed, n) {
+async function feed(chan, nick, provfeed, n) {
     if (provfeed === undefined) {
         bot.say(chan, errorMsg+" No feed has been provided.")
         return;
+    } else if (provfeed === 'me' ) {
+        var provfeed = nick;
     }
     if (n === undefined) {
         var n = config.feed.default_amount;
     }
-    const worker = new Worker('./commands/feed.js', { 
-        workerData: {
-            provfeed,
-            n
-        }
-    });
-    worker.once('message', (string) => {
-        console.log('Received output from last5 worker, posting.');
-        bot.say(chan, string);
-    });
+    if (isValidUrl(provfeed) === false) {
+        const worker = new Worker('./commands/feed-list.js', { 
+            workerData: {
+                provfeed,
+                n,
+                nick
+            }
+        });
+        worker.once('message', (string) => {
+            console.log('Received output from feed-list worker, posting.');
+            bot.say(chan, string);
+        });
+    } else {
+        const worker = new Worker('./commands/feed-preset.js', { 
+            workerData: {
+                provfeed,
+                n
+            }
+        });
+        worker.once('message', (string) => {
+            console.log('Received output from feed-preset worker, posting.');
+            bot.say(chan, string);
+        });
+    }
 }
 
 async function twitter(chan, provfeed, n) {
@@ -105,7 +132,7 @@ bot.addListener('message', function(nick, to, text, from) {
     if (args[0] === config.irc.prefix+'help') {
         help(to, args[1]);
     } else if (args[0] === config.irc.prefix+'feed') {
-        feed(to, args[1], args[2]);
+        feed(to, nick, args[1], args[2]);
     } else if (args[0] === config.irc.prefix+'twitter') {
         twitter(to, args[1], args[2])
     } else if (args[0] === config.irc.prefix+'set') {

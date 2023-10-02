@@ -1,6 +1,6 @@
 # Mercury
 
-Simple & Customisable RSS Parser for IRC.
+Simple & Customisable RSS Client for IRC.
 
 This bot is not completed, expect bugs/crashes/errors. Use in production is disadvised at this stage.
 
@@ -8,8 +8,9 @@ This bot is not completed, expect bugs/crashes/errors. Use in production is disa
 
 ## Commands
 
-- `m!feed [FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed.
+- `m!feed [USER/FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)
 - `m!twitter [USER] [ENTRIES]` - Return the last x amount of tweets from a particular user.
+- `m!set [CATEGORY] [OPTION] [VALUE]` - Control bot settings, see wiki for info on usage.
 
 ## Deployment
 
