@@ -27,7 +27,6 @@ function consoleLog(log) {
 }
 
 async function sendUpstream(content) {
-    consoleLog('[options] All done.')
     parentPort.postMessage(content);
     process.exit()
 }

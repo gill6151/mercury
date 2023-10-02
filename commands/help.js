@@ -18,7 +18,6 @@ function consoleLog(log) {
 
 async function sendUpstream(content) {
     var output = content.join("\n")
-    consoleLog('[help] All done.')
     parentPort.postMessage(output);
     process.exit()
 }

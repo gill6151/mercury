@@ -25,7 +25,6 @@ function consoleLog(log) {
 
 async function sendUpstream(content) {
     var output = content.join("\n")
-    consoleLog('[feed-preset] All done.')
     parentPort.postMessage(output);
     process.exit()
 }
