@@ -1,14 +1,10 @@
 const config = require('../config/default.json')
-//const uconfig = require('../config/usersettings.json')
+const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-//const { d1, d2, d3, d4, d5, d6 } = workerData;
-//var user = d1;
-//var setting = d2;
-//var setting2 = d3;
-//var value = d4;
-//var value2 = d5;
-//var hostmask = d6
-const fs = require('fs-extra')
+//const { d1, d2, d3 } = workerData;
+//var val1 = d1;
+//var val2 = d2;
+//var val3 = d3;
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
@@ -27,26 +23,20 @@ async function sendUpstream(content) {
     process.exit()
 }
 
-function errorMessage(error, code, extra) {
-    consoleLog('[cvc.errorMessage] '+error.code)
-    if (code == "404") {
-        var error = errorMsg+" 404: " + extra + " not found"
-    } else if (error.code == "ECONNREFUSED") {
-        var error = errorMsg+" Connection Refused"
-    } else if (error.code == "ERR_UNESCAPED_CHARACTERS"){
-        var error = errorMsg+" Unescaped Characters"
-    } else if (code == "INVALID") {
-        var error = errorMsg+' '+extra+' either does not exist or is not a valid feed.'
-    } else if (code == "ALREADYEXISTS" ) { 
-        var error = errorMsg+' '+extra+' already exists in your feed list.'
-    } else if (error == "NOFEEDS") { 
-        var error = errorMsg+" No saved feeds for "+provfeed
-    } else {
-        var error = errorMsg+" Unknown error"
-    }
-    parentPort.postMessage(error);
-    process.exit()
-}
+//function errorMessage(error, code, extra) {
+//    consoleLog('[cvc.errorMessage] '+error.code)
+//    if (code == "404") {
+//        var error = errorMsg+" 404: " + extra + " not found"
+//    } else if (error.code == "ECONNREFUSED") {
+//        var error = errorMsg+" Connection Refused"
+//    } else {
+//        var error = errorMsg+" Unknown error"
+//    }
+//    parentPort.postMessage(error);
+//    process.exit()
+//}
+// this is not needed right now but might be in the future
+
 
 function checkValuesExist() {
     const fatalConfigError = new Set();
