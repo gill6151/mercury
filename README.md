@@ -4,6 +4,8 @@ RSS Parser for IRC
 
 This bot is currently in development and not fully functioning. Do not use in production.
 
+![m!feed Example](/.screens/1.png?raw=true "m!feed Example")
+
 ## Commands
 
 - `m!feed [FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed.
