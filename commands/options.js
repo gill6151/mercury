@@ -8,6 +8,7 @@ let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},
 });
 const editJsonFile = require("edit-json-file");
+const { getDefaultHighWaterMark } = require('stream');
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
@@ -79,8 +80,16 @@ async function feed(nick, setting, value) {
     }
 }
 
+async function get(setting) {
+    var file = editJsonFile('/home/node/app/config/default.json')
+    console.log(file.get(setting));
+    sendUpstream(file.get(setting))
+}
+
 if (setting === 'feed') {
     feed(user, setting2, value);
 } else if (setting === 'list') {
     feed(user, setting2)
+} else if (setting === 'get') {
+    get(setting2);
 }
