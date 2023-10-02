@@ -9,7 +9,7 @@ This bot is currently in development and not fully functioning. Do not use in pr
 ## Commands
 
 - `m!feed [FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed.
-- `m!set [OPTION] [VALUE]` - Changes a bot setting, more info to be added here later.
+- `m!twitter [USER] [ENTRIES]` - Return the last x amount of tweets from a particular user.
 
 ## Deployment
 

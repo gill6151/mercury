@@ -30,7 +30,7 @@ async function help(chan, sub) {
         bot.say(chan, '                                    /____/   ')
         bot.say(chan, 'Mercury - https://git.supernets.org/hogwart7/mercury')
         bot.say(chan, 'm!feed [FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed')
-        bot.say(chan, "m!set [OPTION] [VALUE] - run r!help set for details")
+        bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
     }
 }
 
