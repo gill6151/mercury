@@ -67,7 +67,10 @@ async function opt(chan, user, setting, setting2, value, value2) {
 async function feed(chan, nick, provfeed, n) {
     var userconf = fs.readFileSync('./config/usersettings.json')
     var uconfig = JSON.parse(userconf)
-    var provfeed = provfeed.toLowerCase()
+    if (isValidUrl(provfeed) === false) {
+        consoleLog('[bot.feed] Provided feed is not a URL, transforming to lowercase')
+        var provfeed = provfeed.toLowerCase()
+    }
     var predefinedFeeds = ['twitter', 'github']
     var predefString = provfeed.split("/")
     if (provfeed === undefined) {
