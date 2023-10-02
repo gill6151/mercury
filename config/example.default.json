@@ -27,6 +27,7 @@
         "body": "00",
         "link": "02",
         "help_logo": "07",
+        "help_motd": "08",
         "warning": "08",
         "error": "05"
     },
@@ -47,6 +48,14 @@
     },
     "misc": {
         "display_help_logo": "true",
-        "logging": "true"
+        "logging": "true",
+        "command_listen_timeout": "2500"
+    },
+    "motd": {
+        "enable": "true",
+        "list": [
+            "COLD HARD CHATS"
+        ],
+        "version": "git-master"
     }
 }

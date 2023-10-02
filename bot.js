@@ -9,7 +9,6 @@ const { Worker } = require('worker_threads');
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
 
-
 var bot = new irc.Client(config.irc.server, config.irc.nickname, {
     channels: config.irc.channels,
     secure: config.irc.ssl,
@@ -20,6 +19,9 @@ var bot = new irc.Client(config.irc.server, config.irc.nickname, {
     floodProtection: config.irc.floodprotection,
     floodProtectionDelay: config.irc.floodprotectiondelay
 });
+
+const msgTimeout = new Set();
+const msgTimeoutMsg = new Set();
 
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
@@ -111,15 +113,31 @@ async function twitter(chan, provfeed, n) {
 }
 
 bot.addListener('message', function(nick, to, text, from) {
-    var args = text.split(' ');
-    if (args[0] === config.irc.prefix+'help') {
-        help(to, args[1]);
-    } else if (args[0] === config.irc.prefix+'feed') {
-        feed(to, nick, args[1], args[2]);
-    } else if (args[0] === config.irc.prefix+'twitter') {
-        twitter(to, args[1], args[2])
-    } else if (args[0] === config.irc.prefix+'opt') {
-        opt(to, nick, args[1], args[2], args[3], args[4])
+    if (msgTimeout.has(to)) {
+        if (msgTimeoutMsg.has("yes")) {
+            return;
+        } else {
+            bot.say(to, errorMsg+" You are sending commands too quickly")
+            msgTimeoutMsg.add("yes");
+            setTimeout(() => {
+                msgTimeoutMsg.delete("yes");
+            }, config.misc.command_listen_timeout)           
+        }
+    } else {
+        var args = text.split(' ');
+        if (args[0] === config.irc.prefix+'help') {
+            help(to, args[1]);
+        } else if (args[0] === config.irc.prefix+'feed') {
+            feed(to, nick, args[1], args[2]);
+        } else if (args[0] === config.irc.prefix+'twitter') {
+            twitter(to, args[1], args[2])
+        } else if (args[0] === config.irc.prefix+'opt') {
+            opt(to, nick, args[1], args[2], args[3], args[4])
+        }
+        msgTimeout.add(to);
+        setTimeout(() => {
+            msgTimeout.delete(to);
+        }, config.misc.command_listen_timeout)
     }
 });
 
