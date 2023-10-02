@@ -68,14 +68,19 @@ async function feed(nick, setting, value) {
         consoleLog('[options.feed] '+nick+' is adding '+value)
         await testFeed(value);
         var file = editJsonFile('/home/node/app/config/usersettings.json');
-        var feedsArr = uconfig[nick].feeds
-        if (feedsArr.includes(value) == true) {
-            errorMessage("null", "ALREADYEXISTS", value)
-        } else {
-            file.append(nick+".feeds", value);
-            file.save();
-            sendUpstream(value + ' added to your feed list')
+        try {
+            var feedsArr = uconfig[nick].feeds
+            if (feedsArr.includes(value) == true) {
+                errorMessage("null", "ALREADYEXISTS", value)
+                return;
+            }
+        } catch (e) {
+            consoleLog('[options.feed] No user feed list in usersettings.json, it will be made')
         }
+        file.append(nick+".feeds", value);
+        file.save();
+        sendUpstream(value + ' added to your feed list')
+        
     }
     if (setting === 'list') {
         content = [];
