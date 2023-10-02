@@ -30,6 +30,8 @@ function errorMessage(error, code, extra) {
         var error = errorMsg+' '+extra+' either does not exist or is not a valid feed.'
     } else if (code == "ALREADYEXISTS" ) { 
         var error = errorMsg+' '+extra+' already exists in your feed list.'
+    } else if (error == "NOFEEDS") { 
+        var error = errorMsg+" No saved feeds for "+provfeed
     } else {
         var error = errorMsg+" Unknown error"
     }
@@ -60,8 +62,25 @@ async function feed(nick, setting, value) {
             sendUpstream(value + ' added to your feed list')
         }
     }
+    if (setting === 'list') {
+        content = [];
+        try {
+            var feedsArr = uconfig[nick].feeds
+            console.log(feedsArr)
+            content.push("These are your added feeds:")
+        } catch (e) {
+            errorMessage(e, "NOFEEDS", nick);
+        }
+        for (let i = 0; i < feedsArr.length; i++) {
+            content.push(i+1+'. '+feedsArr[i])
+        }
+        var output = content.join("\n")
+        sendUpstream(output)
+    }
 }
 
 if (setting === 'feed') {
     feed(user, setting2, value);
+} else if (setting === 'list') {
+    feed(user, setting2)
 }
