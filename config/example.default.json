@@ -1,0 +1,13 @@
+{
+    "irc": {
+        "server": "irc.supernets.org",
+        "port": 6697,
+        "ssl": "true",
+        "channels": [
+            "#5000"
+        ],
+        "nickname": "mercury",
+        "username": "mercury",
+        "realname": "git.supernets.org/hogwart7/mercury"
+    }
+}

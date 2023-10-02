@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+    mercury:
+        container_name: mercury
+        build: .
+        restart: always
+        volumes:
+            - './config/default.json:/home/node/app/config/default.json'
+            - './config/settings.txt:/home/node/app/config/settings.txt'
