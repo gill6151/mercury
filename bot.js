@@ -67,6 +67,9 @@ async function opt(chan, user, setting, setting2, value, value2) {
 async function feed(chan, nick, provfeed, n) {
     var userconf = fs.readFileSync('./config/usersettings.json')
     var uconfig = JSON.parse(userconf)
+    var provfeed = provfeed.toLowerCase()
+    var predefinedFeeds = ['twitter', 'github']
+    var predefString = provfeed.split("/")
     if (provfeed === undefined) {
         consoleLog('[bot.feed] No feed provided')
         bot.say(chan, errorMsg+" No feed has been provided.")
@@ -79,9 +82,16 @@ async function feed(chan, nick, provfeed, n) {
         consoleLog('[bot.feed] no amount was passed, reverting to default')
         var n = config.feed.default_amount;
     }
+
     if (isValidUrl(provfeed) === true) { //URL Lookup
         consoleLog('[bot.feed] Valid URL requested')
         openPostWorker(chan, 'feed-preset', provfeed, n);
+
+    } else if (predefinedFeeds.includes(predefString[0])) {
+        console.log(predefString[0])
+        //bot.say(chan, "Should work good")
+        openPostWorker(chan, "feed-predef", provfeed, n)
+   
     } else if (provfeed === nick) { //User Feed Lookup
         consoleLog('[bot.feed] User feed requested')
         if ( uconfig[nick] !== undefined ) { //If users nickname exists in json file

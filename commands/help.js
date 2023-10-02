@@ -65,7 +65,6 @@ async function help(sub) {
         }
         content.push('Mercury RSS Client - https://git.supernets.org/hgw/mercury')
         content.push('m!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
-        content.push("m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
         content.push("m!opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
         content.push('m!help - Brings up this dialogue')
         sendUpstream(content)

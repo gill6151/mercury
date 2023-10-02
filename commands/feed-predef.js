@@ -46,7 +46,7 @@ function errorMessage(error, code, extra) {
     process.exit()
 }
 
-async function fetchFeed(feedURL, n) {
+async function twitter(feedURL, n) {
     var content = [];
     consoleLog('[twitter.fetchFeed] fetching @'+feedURL)
 
@@ -114,4 +114,10 @@ async function fetchFeed(feedURL, n) {
     sendUpstream(content);
 }
 
-fetchFeed(provfeed, n);
+var provfeed = provfeed.toLowerCase().split("/")
+if (provfeed[0] == "twitter") {
+    twitter(provfeed[1], n);
+}
+
+
+
