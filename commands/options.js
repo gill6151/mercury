@@ -27,8 +27,8 @@ function consoleLog(log) {
 }
 
 async function sendUpstream(content) {
-    parentPort.postMessage(content);
     consoleLog('[options] All done.')
+    parentPort.postMessage(content);
     process.exit()
 }
 
@@ -97,19 +97,20 @@ async function feed(nick, setting, value) {
 
 async function alias(setting, value, url, nick) {
     if (setting === 'add') {
+        var value = value.toUpperCase()
         consoleLog('[options.alias] Adding/editing an alias for'+nick+': '+value+' ==> '+url)
         await testFeed(url);
         var file = editJsonFile('/home/node/app/config/usersettings.json');
-        file.set(nick+'.alias.'+value, url);
+        file.set(nick+'.alias.'+value.toUpperCase(), url);
         file.save();
-        sendUpstream('Alias added ('+value+' ==> '+url+')')
+        sendUpstream('Alias added ('+value.toUpperCase()+' ==> '+url+')')
     }
     if (setting === 'del') {
         consoleLog('[options.alias] Removing an alias for '+nick+': '+value+' ==> \"\"')
         var file = editJsonFile('/home/node/app/config/usersettings.json');
-        file.set(nick+'.alias.'+value, "");
+        file.set(nick+'.alias.'+value.toUpperCase(), "");
         file.save();
-        sendUpstream('Alias removed ('+value+' ==> BTFO\'d)')
+        sendUpstream('Alias removed ('+value.toUpperCase()+' ==> BTFO\'d)')
     }
     if (setting === 'list') {
         content = [];
@@ -141,4 +142,6 @@ if (setting === 'feed') {
     get(setting2);
 } else if(setting === 'alias') {
     alias(setting2, value, value2, user)
+} else {
+    sendUpstream(errorMsg+' '+setting+' is not a valid option')
 }

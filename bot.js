@@ -90,7 +90,7 @@ async function feed(chan, nick, provfeed, n) {
         }
     } else if (uconfig[nick].alias !== undefined ) { //Alias Lookup
         consoleLog('[bot.feed] Alias requested')
-        var provfeed = uconfig[nick].alias[provfeed]
+        var provfeed = uconfig[nick].alias[provfeed.toUpperCase()]
         openPostWorker(chan, "feed-preset", provfeed, n);
     } else {
         consoleLog('[bot.feed] No valid feed entered')
