@@ -22,6 +22,18 @@ This bot is not completed, expect bugs/crashes/errors. Use in production is disa
 
 If you need assistance with installation or usage, join #5000 on `irc.supernets.org`
 
+## TODO
+
+Once the following are completed, I will consider this project functional and ready to use in production.
+
+- [x] Grab RSS feeds via URL
+- [x] Allow users to save feeds and easily grab them all at once (needs tweaking still but mostly done)
+- [x] Alias support
+- [ ] Grab feeds at set intervals and post new content in a set channel
+- [ ] Migrate from a JSON file to a DB for user settings
+- [ ] Extensive testing and applicable error handling, also more descriptive error messages
+- [ ] Ensure wiki is updated
+- [ ] Publish Docker image so the client does not need to be built by end users
 ## License
 
 This software is licensed under the ISC License, its full text can be found [here](/LICENSE).
