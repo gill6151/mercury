@@ -127,7 +127,7 @@ async function feed(chan, nick, provfeed, n) {
 
     } else if (predefinedFeeds.includes(predefString[0])) { //Predefined Feed lookup
         consoleLog('[bot.feed] Detected predefined feed: '+predefString[0])
-        openPostWorker(chan, "feed-predef", provfeed, n)
+        openPostWorker(chan, "feed-predef", provfeed, n, nick)
    
     } else if (provfeed === nick) { //User Feed Lookup
         consoleLog('[bot.feed] User feed requested')

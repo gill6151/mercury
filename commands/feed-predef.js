@@ -1,9 +1,10 @@
 const config = require('../config/default.json')
 const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-const { d1, d2 } = workerData;
+const { d1, d2, d3 } = workerData;
 var provfeed = d1;
 var n = d2
+var nick = d3
 let Parser = require('rss-parser');
 let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},
@@ -48,7 +49,7 @@ function errorMessage(error, code, extra) {
     process.exit()
 }
 
-async function twitter(feedURL, n) {
+async function twitter(feedURL, n, nick) {
     var content = [];
     consoleLog('[feed-predef.twitter] fetching @'+feedURL)
 
@@ -120,7 +121,7 @@ async function twitter(feedURL, n) {
     sendUpstream(content);
 }
 
-async function github(user, repo, type, n) {
+async function github(user, repo, type, n, nick) {
     var content = [];
     var validTypes = ['commits', 'releases']
     if ( validTypes.includes(type) == false ) {
@@ -193,7 +194,7 @@ async function github(user, repo, type, n) {
 var provfeed = provfeed.toLowerCase().split("/")
 if (provfeed[0] == "twitter") {
     consoleLog("[feed-predef] Running twitter function")
-    twitter(provfeed[1], n);
+    twitter(provfeed[1], n, nick);
 } else if (provfeed[0] == "github") {
     if (provfeed[3] == undefined) {
         consoleLog("[feed-predef] No GitHub feed type provided, defaulting to commits")
@@ -202,7 +203,7 @@ if (provfeed[0] == "twitter") {
         var type = provfeed[3]
     }
     consoleLog("[feed-predef] Running GitHub function")
-    github(provfeed[1], provfeed[2], type, n)
+    github(provfeed[1], provfeed[2], type, n, nick)
 }
 
 
