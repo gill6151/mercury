@@ -5,8 +5,9 @@ var readline = require('readline');
 const { Worker } = require('worker_threads');
 //var randomWords = require('better-random-words');
 
-warningMsg = '['+config.colours.warning+'WARNING]'
-errorMsg = '['+config.colours.error+'ERROR]'
+warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
+errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
+
 
 var bot = new irc.Client(config.irc.server, config.irc.nickname, {
     channels: config.irc.channels,

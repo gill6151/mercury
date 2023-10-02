@@ -12,8 +12,9 @@ const tz = require('moment-timezone');
 const editJsonFile = require("edit-json-file");
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
-warningMsg = '['+config.colours.warning+'WARNING]'
-errorMsg = '['+config.colours.error+'ERROR]'
+warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
+errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
+
 
 async function sendUpstream(content) {
     //var output = content.join("\n")
