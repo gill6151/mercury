@@ -79,12 +79,14 @@ async function twitter(chan, provfeed, n) {
 
 bot.addListener('message', function(nick, to, text, from) {
     var args = text.split(' ');
-    if (args[0] === 'm!help') {
+    if (args[0] === config.irc.prefix+'help') {
         help(to, args[1]);
-    } else if (args[0] === 'm!feed') {
+    } else if (args[0] === config.irc.prefix+'feed') {
         feed(to, args[1], args[2]);
-    } else if (args[0] === 'm!twitter') {
+    } else if (args[0] === config.irc.prefix+'twitter') {
         twitter(to, args[1], args[2])
+    } else if (args[0] === config.irc.prefix+'set') {
+        
     }
 });
 

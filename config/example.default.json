@@ -11,7 +11,8 @@
         "realname": "git.supernets.org/hogwart7/mercury",
         "autorejoin": "true",
         "floodprotection": "false",
-        "floodprotectiondelay": "0"
+        "floodprotectiondelay": "0",
+        "prefix": "m!"
     },
     "colours": {
         "date": "11",
