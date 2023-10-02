@@ -123,31 +123,33 @@ async function twitter(chan, provfeed, n) {
 }
 
 bot.addListener('message', function(nick, to, text, from) {
-    if (msgTimeout.has(to)) {
-        if (msgTimeoutMsg.has("yes")) {
-            return;
+    if (text.startsWith(config.irc.prefix)) {
+        if (msgTimeout.has(to)) {
+            if (msgTimeoutMsg.has("yes")) {
+                return;
+            } else {
+                bot.say(to, errorMsg+" You are sending commands too quickly")
+                msgTimeoutMsg.add("yes");
+                setTimeout(() => {
+                    msgTimeoutMsg.delete("yes");
+                }, config.floodprotect.command_listen_timeout)           
+            }
         } else {
-            bot.say(to, errorMsg+" You are sending commands too quickly")
-            msgTimeoutMsg.add("yes");
+            var args = text.split(' ');
+            if (args[0] === config.irc.prefix+'help') {
+                help(to, args[1]);
+            } else if (args[0] === config.irc.prefix+'feed') {
+                feed(to, nick, args[1], args[2]);
+            } else if (args[0] === config.irc.prefix+'twitter') {
+                twitter(to, args[1], args[2])
+            } else if (args[0] === config.irc.prefix+'opt') {
+                opt(to, nick, args[1], args[2], args[3], args[4])
+            }
+            msgTimeout.add(to);
             setTimeout(() => {
-                msgTimeoutMsg.delete("yes");
-            }, config.floodprotect.command_listen_timeout)           
+                msgTimeout.delete(to);
+            }, config.floodprotect.command_listen_timeout)
         }
-    } else {
-        var args = text.split(' ');
-        if (args[0] === config.irc.prefix+'help') {
-            help(to, args[1]);
-        } else if (args[0] === config.irc.prefix+'feed') {
-            feed(to, nick, args[1], args[2]);
-        } else if (args[0] === config.irc.prefix+'twitter') {
-            twitter(to, args[1], args[2])
-        } else if (args[0] === config.irc.prefix+'opt') {
-            opt(to, nick, args[1], args[2], args[3], args[4])
-        }
-        msgTimeout.add(to);
-        setTimeout(() => {
-            msgTimeout.delete(to);
-        }, config.floodprotect.command_listen_timeout)
     }
 });
 
