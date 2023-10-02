@@ -1,3 +1,10 @@
+//  Mercury RSS Client - git.supernets.org/hgw/mercury
+//       ____ ___  ___  ____________  _________  __
+//      / __ `__ \/ _ \/ ___/ ___/ / / / ___/ / / /
+//     / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / 
+//    /_/ /_/ /_/\___/_/   \___/\__,_/_/   \__, /  
+//     COLD HARD FEEDS                    /____/   
+//
 var config = require('./config/default.json');
 //var uconfig = require('./config/usersettings.json');
 var irc = require("irc");
@@ -202,26 +209,39 @@ bot.addListener('error', function(message) {
 });
 
 async function init() {
-    consoleLog('[bot.init] Welcome to Mercury');
     consoleLog('[bot.init] Checking config validity')
     checkConfigValidity()
     await timer(1500)
     consoleLog('[bot.init] Checking if user settings file exists')
     fs.open('./config/usersettings.json','r',function(err, fd){
         if (err) {
-          fs.writeFile('./config/usersettings.json', '', function(err) {
-              if(err) {
-                consoleLog(err);
-              }
-              consoleLog("[bot.init] User settings did not exist, it has been created for you");
-          });
-          fs.writeFileSync('./config/usersettings.json', "\{\n\}")
+            fs.writeFile('./config/usersettings.json', '', function(err) {
+                if(err) {
+                    consoleLog(err);
+                    consoleLog('[bot.init] [FATAL] User settings file could not be created. Mercury can not start')
+                    process.exit()  
+                }
+                consoleLog("[bot.init] User settings does not exist, please hold...");
+            });
+            try {
+                fs.writeFileSync('./config/usersettings.json', "\{\n\}")
+            } catch(e) {
+                consoleLog(e)
+                consoleLog('[bot.init] [FATAL] User settings file was created but is not writable, could be a permissions issue. Mercury can not start')
+                process.exit()
+            }
+            consoleLog('[bot.init] User settings file has been created')
         } else {
             consoleLog("[bot.init] User settings file exists");
         }
-      });
+    });
     await timer(100)
-    consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);    
+    if (config.irc.ssl == "true") {
+        consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' (SSL) as '+config.irc.nickname); 
+    } else {
+        consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname); 
+    }
+    consoleLog('[bot] Welcome to Mercury');   
 }
 
 init()
