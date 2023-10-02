@@ -8,15 +8,23 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
 
+function consoleLog(log) {
+    if (config.misc.logging === "true") {
+        console.log(log)
+    } else {
+        return;
+    }
+}
 
 async function sendUpstream(content) {
     var output = content.join("\n")
+    consoleLog('[help] All done.')
     parentPort.postMessage(output);
     process.exit()
 }
 
 function errorMessage(error, code, extra) {
-    console.log(error.code)
+    consoleLog('[help.errorMessage] '+error.code)
     if (code == "404") {
         var error = errorMsg+" 404: " + extra + " not found"
     } else if (error.code == "ECONNREFUSED") {
@@ -37,13 +45,15 @@ async function help(sub) {
         var sub = "default"
     }
     if (sub === "default") {
-        console.log(config.misc.display_help_logo)
         if (config.misc.display_help_logo === 'true' ) {
+            consoleLog('[help.default] Logo enabled, including in output')
             content.push(''+config.colours.help_logo+'   ____ ___  ___  ____________  _________  __')
             content.push(''+config.colours.help_logo+'  / __ `__ \\/ _ \\/ ___/ ___/ / / / ___/ / / /')
             content.push(''+config.colours.help_logo+' / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / ')
             content.push(''+config.colours.help_logo+'/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
             content.push(''+config.colours.help_logo+'                                    /____/   ')
+        } else if (config.misc.display_help_logo !== 'true') {
+            consoleLog('[help.default] Logo disabled, not including in output')
         }
         content.push('Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
         content.push('m!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')

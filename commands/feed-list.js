@@ -17,14 +17,23 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
 
+function consoleLog(log) {
+    if (config.misc.logging === "true") {
+        console.log(log)
+    } else {
+        return;
+    }
+}
+
 async function sendUpstream(content) {
     var output = content.join("\n")
+    consoleLog('[feed-list] All done.')
     parentPort.postMessage(output);
     process.exit()
 }
 
 function errorMessage(error, code, extra) {
-    console.log(error.code)
+    consoleLog('[feed-list.errorMessage] '+error.code)
     if (code == "404") {
         var error = errorMsg+" 404: " + extra + " not found"
     } else if (error.code == "ECONNREFUSED") {
@@ -55,6 +64,7 @@ async function fetchFeed(feedURL, n, nick) {
         var n = n/feedsArr.length
     }
     for (let i = 0; i < feedsArr.length; i++) {
+        consoleLog('[feed-list.fetchFeed] Fetching '+feedsArr[i])
         try {
             var newFeed = await parser.parseURL(feedsArr[i]);
         } catch (e) {
@@ -83,7 +93,6 @@ async function fetchFeed(feedURL, n, nick) {
         if (data.isoDate !== undefined) {
                 var date = moment(data.isoDate)
                 var syncDate = date.tz(config.feed.timezone)
-                console.log(syncDate.format())
                 var date = syncDate.format(config.feed.time_format)
             } else {
                 var date = data.pubDate
@@ -97,31 +106,12 @@ async function fetchFeed(feedURL, n, nick) {
             author = ''+config.colours.author+data.creator+' '
             body = ''+config.colours.body+body+' '
             link = ''+config.colours.link+data.link+' '
-            //console.log(data);
-            //var string = "15[11" + date + "15] 08" + title + " " + body + " " + data.link;
+
             var string = date+title+body+link;
             content.push(string)
-            console.log(content)
         }
-        //sendUpstream(content);
     }
     sendUpstream(content);
-
-    
 }
 
-
-//var file = editJsonFile('/home/node/app/config/usersettings.json');
-//async function getAllFeeds(nick, n) {
-//    console.log(nick)
-//    var feedsArr = uconfig[nick].feeds
-//    console.log(feedsArr)
-//    var num = n/feedsArr.length
-//    for (let i = 0; i < feedsArr.length; i++) {
-//        fetchFeed(feedsArr[i], num);
-//    }
-//    await sendUpstream(content);
-//}
-
-//getAllFeeds(nick, n)
 fetchFeed(provfeed, n, provfeed);

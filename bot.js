@@ -33,14 +33,23 @@ const isValidUrl = urlString=> {
     return !!urlPattern.test(urlString);
 }
 
+function consoleLog(log) {
+    if (config.misc.logging === "true") {
+        console.log(log)
+    } else {
+        return;
+    }
+}
+
 function openPostWorker(chan, command, d1, d2, d3, d4, d5) {
+    consoleLog(`[bot.openPostWorker] Opening ${command} worker`)
     const worker = new Worker(`./commands/${command}.js`, { 
         workerData: {
         d1, d2, d3, d4, d5
         }
     });
     worker.once('message', (string) => {
-        console.log(`${command} worker has signalled it has completed, sending output to IRC`);
+        consoleLog(`[bot.openPostWorker] Got output from ${command}, sending to `+chan);
         bot.say(chan, string);
     });
 }
@@ -56,24 +65,23 @@ async function opt(chan, user, setting, setting2, value, value2) {
 async function feed(chan, nick, provfeed, n) {
     var userconf = fs.readFileSync('./config/usersettings.json')
     var uconfig = JSON.parse(userconf)
-
     if (provfeed === undefined) {
+        consoleLog('[bot.feed] No feed provided')
         bot.say(chan, errorMsg+" No feed has been provided.")
         return;
     } else if (provfeed === 'me' ) {
+        consoleLog('[bot.feed] \"me\" was passed, correcting to '+nick)
         var provfeed = nick;
     }
     if (n === undefined) {
+        consoleLog('[bot.feed] no amount was passed, reverting to default')
         var n = config.feed.default_amount;
     }
-
-    console.log(isValidUrl(provfeed))
-    console.log(provfeed === nick)
-    console.log(uconfig[nick].alias !== undefined)
-
     if (isValidUrl(provfeed) === true) { //URL Lookup
+        consoleLog('[bot.feed] Valid URL requested')
         openPostWorker(chan, 'feed-preset', provfeed, n);
     } else if (provfeed === nick) { //User Feed Lookup
+        consoleLog('[bot.feed] User feed requested')
         if ( uconfig[nick] !== undefined ) { //If users nickname exists in json file
             openPostWorker(chan, 'feed-list', provfeed, n, nick);
         } else { //If it does not
@@ -81,15 +89,18 @@ async function feed(chan, nick, provfeed, n) {
             return;
         }
     } else if (uconfig[nick].alias !== undefined ) { //Alias Lookup
+        consoleLog('[bot.feed] Alias requested')
         var provfeed = uconfig[nick].alias[provfeed]
         openPostWorker(chan, "feed-preset", provfeed, n);
     } else {
-        bot.say(chan, 'Not sure how you managed to get this error, but good job')
+        consoleLog('[bot.feed] No valid feed entered')
+        bot.say(chan, errorMsg+" Your chosen feed or alias is not valid")
     }
 }
 
 async function twitter(chan, provfeed, n) {
     if (provfeed === undefined) {
+        consoleLog('[bot.twitter] No twitter account provided')
         bot.say(chan, errorMsg+" No account has been provided.")
         return;
     }
@@ -113,7 +124,8 @@ bot.addListener('message', function(nick, to, text, from) {
 });
 
 bot.addListener('error', function(message) {
-	console.log('error: ', message);
+    consoleLog('[ERROR]' +message)
 });
 
-console.log('Starting Mercury');
+console.log('[main] Starting Mercury');
+console.log('[main.irc] Connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname)

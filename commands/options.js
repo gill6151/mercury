@@ -18,13 +18,22 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
 
+function consoleLog(log) {
+    if (config.misc.logging === "true") {
+        console.log(log)
+    } else {
+        return;
+    }
+}
+
 async function sendUpstream(content) {
     parentPort.postMessage(content);
+    consoleLog('[options] All done.')
     process.exit()
 }
 
 function errorMessage(error, code, extra) {
-    console.log(error.code)
+    consoleLog('[options.errorMessage] '+error.code)
     if (code == "404") {
         var error = errorMsg+" 404: " + extra + " not found"
     } else if (error.code == "ECONNREFUSED") {
@@ -46,18 +55,18 @@ function errorMessage(error, code, extra) {
 
 async function testFeed(feedURL) {
     try {
-        console.log('Testing feed')
+        consoleLog('[options.testFeed] Testing '+feed)
         var feed = await parser.parseURL(feedURL);
     } catch (e) {
-        console.log(e)
+        consoleLog('[options.testFeed] '+e)
         errorMessage(e, "INVALID", feedURL);
     }
-    console.log(feed)
-    console.log("Feed is good, saving")
+    consoleLog("[options.testFeed] Feed is valid, continuing")
 }
 
 async function feed(nick, setting, value) {
     if (setting === 'add') {
+        consoleLog('[options.feed] '+nick+' is adding '+value)
         await testFeed(value);
         var file = editJsonFile('/home/node/app/config/usersettings.json');
         var feedsArr = uconfig[nick].feeds
@@ -73,7 +82,7 @@ async function feed(nick, setting, value) {
         content = [];
         try {
             var feedsArr = uconfig[nick].feeds
-            console.log(feedsArr)
+            consoleLog('[options.feed] Listing existing feeds for '+nick+': '+feedsArr)
             content.push("These are your added feeds:")
         } catch (e) {
             errorMessage(e, "NOFEEDS", nick);
@@ -88,6 +97,7 @@ async function feed(nick, setting, value) {
 
 async function alias(setting, value, url, nick) {
     if (setting === 'add') {
+        consoleLog('[options.alias] Adding/editing an alias for'+nick+': '+value+' ==> '+url)
         await testFeed(url);
         var file = editJsonFile('/home/node/app/config/usersettings.json');
         file.set(nick+'.alias.'+value, url);
@@ -95,6 +105,7 @@ async function alias(setting, value, url, nick) {
         sendUpstream('Alias added ('+value+' ==> '+url+')')
     }
     if (setting === 'del') {
+        consoleLog('[options.alias] Removing an alias for '+nick+': '+value+' ==> \"\"')
         var file = editJsonFile('/home/node/app/config/usersettings.json');
         file.set(nick+'.alias.'+value, "");
         file.save();
@@ -103,6 +114,7 @@ async function alias(setting, value, url, nick) {
     if (setting === 'list') {
         content = [];
         var obj = uconfig[nick].alias
+        consoleLog('[options.alias] Listing aliases for '+nick+': '+obj)
         console.log(obj)
         for (const [key, val] of Object.entries(obj)) {
             if (val !== "") {
@@ -115,6 +127,7 @@ async function alias(setting, value, url, nick) {
 }
 
 async function get(setting) {
+    consoleLog('[options.get] Getting value of '+setting)
     var file = editJsonFile('/home/node/app/config/default.json')
     console.log(file.get(setting));
     sendUpstream(file.get(setting))

@@ -15,15 +15,23 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
 
+function consoleLog(log) {
+    if (config.misc.logging === "true") {
+        console.log(log)
+    } else {
+        return;
+    }
+}
 
 async function sendUpstream(content) {
     var output = content.join("\n")
+    consoleLog('[twitter] All done.')
     parentPort.postMessage(output);
     process.exit()
 }
 
 function errorMessage(error, code, extra) {
-    console.log(error.code)
+    consoleLog('[twitter.errorMessage] '+error.code)
     if (code == "404") {
         var error = errorMsg+" 404: " + extra + " not found"
     } else if (error.code == "ECONNREFUSED") {
@@ -40,8 +48,10 @@ function errorMessage(error, code, extra) {
 
 async function fetchFeed(feedURL, n) {
     var content = [];
+    consoleLog('[twitter.fetchFeed] fetching @'+feedURL)
 
     if (feedURL.startsWith('@') == true) {
+        consoleLog('[twitter.fetchFeed] User passed @ in input, removing')
         var feedURL = feedURL.substring(1,feedURL.length);
     }
     var randomNitter = config.twitter.nitter_instances[Math.floor(Math.random() * config.twitter.nitter_instances.length)];
