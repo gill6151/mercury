@@ -24,7 +24,7 @@ async function help(chan, sub) {
     }
     if (sub === "default") {
         bot.say(chan, 'Mercury - https://git.supernets.org/hogwart7/mercury')
-        bot.say(chan, 'm!l5 [FEED] - Return the last 5 entries in any RSS feed.')
+        bot.say(chan, 'm!feed [FEED] [ENTRIES] - Return the last x amount of entries from any RSS feed')
         bot.say(chan, "m!set [OPTION] [VALUE] - run r!help set for details")
     }
 }
