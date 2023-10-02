@@ -1,22 +1,16 @@
-# Fascinus (fa-see-nus)
+# Mercury
 
-cold hard bot for cold hard chats
+RSS Parser for IRC
 
 ## Commands
 
-- $flood [AMOUNT] [TEXT] - Floods the channel with a specific line x amount of times
-- $ctcpflood [TARGET] [TEXT (one word)] [AMOUNT] - Sends x amount of CTCP requests to a target.
-- $sneed - Pastes the Sneed's Feed and Seed copypasta.
-- $rspam [LINES (def=100, max=100000)] - Spams x lines of random characters.
-- $uspam [LINES (def=100, max=100000)] - Spams x lines of random unicode characters of varying length.
-- $art [IMAGE URL (png/jpg)] - Creates IRC art using a source image.
-- $godwords [AMOUNT (def=50, max=100000)] - Generate x amount of random words. Inspired by TempleOS.
+- m!set [OPTION] [VALUE] - Changes a bot setting, more info to be added here later.
 
 ## Deployment
 
 1. Install Docker (required) and Docker Compose (optional, but strongly recommended)
-2. Modify the info in the config block in `bot.js` to your taste.
-3. Run `docker compose up` to begin. Append `-d` to start in the background and `--build` if you make any changes to any files
+2. Rename `config/example.default.json` to `config/default.json` and modify it accordingly.
+3. Run `docker compose up` to begin. Append `-d` to start in the background and `--build` if you make any changes to any files.
 
 ## Support
 

@@ -6,3 +6,5 @@ docker-compose.yml
 scratch
 config/example.default.json
 config/default.json
+LICENSE
+README.md
