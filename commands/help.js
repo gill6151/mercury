@@ -64,9 +64,19 @@ async function help(sub) {
             consoleLog('[help.default] Logo disabled, not including in output')
         }
         content.push('Mercury RSS Client - https://git.supernets.org/hgw/mercury')
-        content.push('m!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
-        content.push("m!opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
-        content.push('m!help - Brings up this dialogue')
+        content.push(config.irc.prefix+'feed [USER/FEED/ALIAS] [ENTRIES(opt)] - Return the last x amount of entries from any RSS feed + more (see m!help feed)')
+        content.push(config.irc.prefix+"opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
+        content.push(config.irc.prefix+'help [COMMAND(opt)] - Brings up this dialogue or instructions for a specific command if specified')
+        content.push('Help shown here may not be comprehensive, more detailed documentation is available on the repository.')
+        sendUpstream(content)
+    }
+    if (sub === "feed") {
+        content.push(config.irc.prefix+'feed Help')
+        content.push(config.irc.prefix+'feed [URL] [ENTRIES (opt)] - Last entries from any valid RSS feed URL.')
+        content.push(config.irc.prefix+'feed twitter/[USERNAME] [ENTRIES (opt)] - Last tweets from any X/Twitter account.')
+        content.push(config.irc.prefix+'feed github/[USER]/[REPO]/[MODE (opt)] [ENTRIES (opt)] - Last commits/releases from any repo. Mode can be "commits" or "releases"')
+        content.push(config.irc.prefix+'feed me OR [NICK] - Your own personalised RSS feed, see repo for configuration')
+        content.push(config.irc.prefix+'feed [ALIAS] [ENTRIES(opt)] - Last entries from a feed associated with a set alias, repo for configuration')
         sendUpstream(content)
     }
 }
