@@ -13,6 +13,16 @@
         "floodprotection": "false",
         "floodprotectiondelay": "0"
     },
+    "colours": {
+        "date": "11",
+        "date_brackets": "15",
+        "title": "08",
+        "author": "08",
+        "body": "00",
+        "link": "02",
+        "warning": "08",
+        "error": "05"
+    },
     "feed": {
         "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",
         "body_max_chars": "200",

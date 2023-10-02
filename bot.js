@@ -5,6 +5,9 @@ var readline = require('readline');
 const { Worker } = require('worker_threads');
 //var randomWords = require('better-random-words');
 
+warningMsg = '['+config.colours.warning+'WARNING]'
+errorMsg = '['+config.colours.error+'ERROR]'
+
 var bot = new irc.Client(config.irc.server, config.irc.nickname, {
     channels: config.irc.channels,
     secure: config.irc.ssl,
@@ -36,7 +39,8 @@ async function help(chan, sub) {
 
 async function feed(chan, provfeed, n) {
     if (provfeed === undefined) {
-        bot.say(chan, "No feed has been provided.")
+        bot.say(chan, errorMsg+" No feed has been provided.")
+        return;
     }
     if (n === undefined) {
         var n = 5;
@@ -55,7 +59,8 @@ async function feed(chan, provfeed, n) {
 
 async function twitter(chan, provfeed, n) {
     if (provfeed === undefined) {
-        bot.say(chan, "No account has been provided.")
+        bot.say(chan, errorMsg+" No account has been provided.")
+        return;
     }
     if (n === undefined) {
         var n = 5;

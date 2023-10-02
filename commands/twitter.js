@@ -10,6 +10,9 @@ const moment = require('moment');
 const tz = require('moment-timezone');
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
+warningMsg = '['+config.colours.warning+'WARNING]'
+errorMsg = '['+config.colours.error+'ERROR]'
+
 async function sendUpstream(content) {
     var output = content.join("\n")
     parentPort.postMessage(output);
@@ -19,13 +22,13 @@ async function sendUpstream(content) {
 function errorMessage(error, code, extra) {
     console.log(error.code)
     if (code == "404") {
-        var error = "[04ERROR] 404: " + extra + " not found"
+        var error = errorMsg+" 404: " + extra + " not found"
     } else if (error.code == "ECONNREFUSED") {
-        var error = "[04ERROR] Connection Refused"
+        var error = errorMsg+" Connection Refused"
     } else if (error.code == "ERR_UNESCAPED_CHARACTERS"){
-        var error = "[04ERROR] Unescaped Characters"
+        var error = errorMsg+" Unescaped Characters"
     } else { 
-        var error = "[04ERROR] Unknown error"
+        var error = errorMsg+" Unknown error"
     }
     
     parentPort.postMessage(error);
@@ -52,10 +55,10 @@ async function fetchFeed(feedURL, n) {
     
     if (n > newFeed.items.length) {
         var n = newFeed.items.length;
-        content.push("[08WARNING] Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
+        content.push(warningMsg+" Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
     } else if (n < 1) {
         var n = 5
-        content.push("[08WARNING] You requested a number less than 1. Reverting to 5");
+        content.push(warningMsg+" You requested a number less than 1. Reverting to 5");
     }
 
     for (let i = 0; i < n; i++) {
@@ -83,10 +86,17 @@ async function fetchFeed(feedURL, n) {
             var truncatedString = body.substring(0,config.feed.body_max_chars);
             var body = truncatedString + "..."
         }
+
+        date = ''+config.colours.date_brackets+'['+config.colours.date+date+''+config.colours.date_brackets+'] '
+        title = ''+config.colours.title+title+' '
+        author = ''+config.colours.author+data.creator+' '
+        body = ''+config.colours.body+body+' '
+        link = ''+config.colours.link+data.link+' '
+
         //console.log(data);
-        var string = "15[11" + date + "15] 08" + data.creator + " " + body + " " + data.link;
-        var output = string;
-        content.push(output)
+        //var string = "15[11" + date + "15] 08" + data.creator + " " + body + " " + data.link;
+        var string = date+author+body+link
+        content.push(string)
     }
     sendUpstream(content);
 }
