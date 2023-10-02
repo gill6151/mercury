@@ -40,9 +40,8 @@
     },
     "twitter": {
         "nitter_instances": [
-            "nitter.1d4.us",
-            "nitter.it",
-            "nitter.pufe.org"
+            "nitter.poast.org",
+            "nitter.privacydev.net"
         ],
         "default_amount": "5"
     },
