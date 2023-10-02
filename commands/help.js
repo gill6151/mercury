@@ -40,6 +40,11 @@ function errorMessage(error, code, extra) {
 
 async function help(sub) {
     content = [];
+    if ( config.irc.prefix == undefined ) {
+        var prefix = 'm!'
+    } else {
+        var prefix = config.irc.prefix
+    }
     if (sub === undefined) {
         var sub = "default"
     }
@@ -63,19 +68,28 @@ async function help(sub) {
             consoleLog('[help.default] Logo disabled, not including in output')
         }
         content.push('Mercury RSS Client - https://git.supernets.org/hgw/mercury')
-        content.push(config.irc.prefix+'feed [USER/FEED/ALIAS] [ENTRIES(opt)] - Return the last x amount of entries from any RSS feed + more (see m!help feed)')
-        content.push(config.irc.prefix+"opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
-        content.push(config.irc.prefix+'help [COMMAND(opt)] - Brings up this dialogue or instructions for a specific command if specified')
+        content.push(prefix+'feed [USER/FEED/ALIAS] [ENTRIES(opt)] - Return the last x amount of entries from any RSS feed + more (see m!help feed)')
+        content.push(prefix+"opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
+        content.push(prefix+'help [COMMAND(opt)] - Brings up this dialogue or instructions for a specific command if specified')
         content.push('Help shown here may not be comprehensive, more detailed documentation is available on the repository.')
         sendUpstream(content)
     }
     if (sub === "feed") {
-        content.push(config.irc.prefix+'feed Help')
-        content.push(config.irc.prefix+'feed [URL] [ENTRIES (opt)] - Last entries from any valid RSS feed URL.')
-        content.push(config.irc.prefix+'feed twitter/[USERNAME] [ENTRIES (opt)] - Last tweets from any X/Twitter account.')
-        content.push(config.irc.prefix+'feed github/[USER]/[REPO]/[MODE (opt)] [ENTRIES (opt)] - Last commits/releases from any repo. Mode can be "commits" or "releases"')
-        content.push(config.irc.prefix+'feed me OR [NICK] - Your own personalised RSS feed, see repo for configuration')
-        content.push(config.irc.prefix+'feed [ALIAS] [ENTRIES(opt)] - Last entries from a feed associated with a set alias, repo for configuration')
+        content.push(prefix+'feed Help Menu')
+        content.push(prefix+'feed [URL] [ENTRIES (opt)] - Last entries from any valid RSS feed URL.')
+        content.push(prefix+'feed twitter/[USERNAME] [ENTRIES (opt)] - Last tweets from any X/Twitter account.')
+        content.push(prefix+'feed github/[USER]/[REPO]/[MODE (opt)] [ENTRIES (opt)] - Last commits/releases from any repo. Mode can be "commits" or "releases"')
+        content.push(prefix+'feed me OR [NICK] - Your own personalised RSS feed, see repo for configuration')
+        content.push(prefix+'feed [ALIAS] [ENTRIES(opt)] - Last entries from a feed associated with a set alias, repo for configuration')
+        sendUpstream(content)
+    }
+    if (sub === "opt") {
+        content.push(prefix+'opt Help Menu')
+        content.push(prefix+'opt feed - Modify user feed settings, run \"'+prefix+'opt feed\" for more details')
+        content.push(prefix+'opt alias - Modify aliases, run \"'+prefix+'opt alias\" for more details')
+        content.push(prefix+'opt set - Modify user bot settings, run \"'+prefix+'opt set\" for more details')
+        content.push(prefix+'opt get - Displays specific bot setting')
+        content.push(prefix+'opt operset - Modify global bot settings (ADMIN)')
         sendUpstream(content)
     }
 }

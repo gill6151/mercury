@@ -55,6 +55,12 @@ function errorMessage(error, code, extra) {
     process.exit()
 }
 
+function arrayRemove(array, value) {
+    return array.filter(function (o) {
+        return o != value;
+    })
+}
+
 async function testFeed(feedURL) {
     try {
         consoleLog('[options.testFeed] Testing '+feed)
@@ -67,8 +73,20 @@ async function testFeed(feedURL) {
 }
 
 async function feed(nick, setting, value) {
+    if (setting == undefined ) {
+        content = []
+        content.push(config.irc.prefix+'opt feed Help Menu')
+        content.push(config.irc.prefix+'opt feed add [VALUE] - Adds a valid RSS feed URL to your feed list')
+        content.push(config.irc.prefix+'opt feed del [VALUE] - Removes any existing RSS feed from your feed list')
+        content.push(config.irc.prefix+'opt feed list - Lists all of the exiting feeds in your feed list')       
+        var output = content.join("\n")
+        sendUpstream(output)
+    }
+    if (setting != undefined ) {
+        var setting = setting.toLowerCase()
+    }
     if (setting === 'add') {
-        consoleLog('[options.feed] '+nick+' is adding '+value)
+        consoleLog('[options.feed] '+nick+' is adding feed entry: '+value)
         await testFeed(value);
         var file = editJsonFile('/home/node/app/config/usersettings.json');
         try {
@@ -84,6 +102,18 @@ async function feed(nick, setting, value) {
         file.save();
         sendUpstream(value + ' added to your feed list')
         
+    }
+    if (setting === "del") {
+        consoleLog('[options.feed] '+nick+' is removing feed entry: '+value)
+        var array = uconfig[nick].feeds
+        var file = editJsonFile('/home/node/app/config/usersettings.json');
+        if (array.includes(value) == false ) {
+            sendUpstream(errorMsg+' '+value+' is not saved in your feed list')
+        }
+        var newArray = arrayRemove(array, value)
+        file.set(nick+'.feeds', newArray)
+        file.save();
+        sendUpstream('Feed entry removed ('+value+' ==> BTFO\'d)')
     }
     if (setting === 'list') {
         content = [];
@@ -103,6 +133,18 @@ async function feed(nick, setting, value) {
 }
 
 async function alias(setting, value, url, nick) {
+    if (setting == undefined ) {
+        content = []
+        content.push(config.irc.prefix+'opt alias Help Menu')
+        content.push(config.irc.prefix+'opt alias add [ALIAS] [URL] - Adds an alias for any valid RSS feed')
+        content.push(config.irc.prefix+'opt alias del [ALIAS] [URL] - Removes an alias')
+        content.push(config.irc.prefix+'opt alias list - Lists all of your existing alises')       
+        var output = content.join("\n")
+        sendUpstream(output)
+    }
+    if (setting != undefined ) {
+        var setting = setting.toLowerCase()
+    }
     if (setting === 'add') {
         var value = value.toUpperCase()
         consoleLog('[options.alias] Adding/editing an alias for'+nick+': '+value+' ==> '+url)
@@ -222,8 +264,8 @@ async function operset(setting, value, value2, hostmask) {
 
 if (setting === 'feed') {
     feed(user, setting2, value);
-} else if (setting === 'list') {
-    feed(user, setting2)
+//} else if (setting === 'list') {
+//    feed(user, setting2)
 } else if (setting === 'get') {
     get(setting2, hostmask, user);
 } else if(setting === 'alias') {

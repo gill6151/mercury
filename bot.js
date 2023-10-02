@@ -71,10 +71,14 @@ function openPostWorker(chan, command, d1, d2, d3, d4, d5, d6) {
 }
 
 async function help(chan, sub) {
+    var sub = sub.toLowerCase()
     openPostWorker(chan, 'help', sub)
 }
 
 async function opt(chan, user, setting, setting2, value, value2) {
+    if (setting == undefined && setting2 == undefined && value == undefined && value2 == undefined) {
+        openPostWorker(chan, 'help', 'opt')
+    }
     if (setting == 'operset' || setting == "get") {
         await checkUserHostmask(user)
     }
@@ -163,7 +167,11 @@ bot.addListener('message', function(nick, to, text, from) {
             } else if (command === config.irc.prefix+'twitter') {
                 twitter(to, args[1], args[2])
             } else if (command === config.irc.prefix+'opt') {
-                opt(to, nick, args[1], args[2], args[3], args[4])
+                if (args[1] == undefined ) {
+                    help(to, "opt")
+                } else {
+                    opt(to, nick, args[1], args[2], args[3], args[4])
+                }
             }
             msgTimeout.add(to);
             setTimeout(() => {
