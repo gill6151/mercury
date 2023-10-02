@@ -32,7 +32,7 @@
         "help_logo": "07",
         "help_motd": "08",
         "warning": "08",
-        "error": "05"
+        "error": "04"
     },
     "feed": {
         "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",
