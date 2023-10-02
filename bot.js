@@ -155,13 +155,14 @@ bot.addListener('message', function(nick, to, text, from) {
             }
         } else {
             var args = text.split(' ');
-            if (args[0] === config.irc.prefix+'help') {
+            var command = args[0].toLowerCase()
+            if (command === config.irc.prefix+'help') {
                 help(to, args[1]);
-            } else if (args[0] === config.irc.prefix+'feed') {
+            } else if (command === config.irc.prefix+'feed') {
                 feed(to, nick, args[1], args[2]);
-            } else if (args[0] === config.irc.prefix+'twitter') {
+            } else if (command === config.irc.prefix+'twitter') {
                 twitter(to, args[1], args[2])
-            } else if (args[0] === config.irc.prefix+'opt') {
+            } else if (command === config.irc.prefix+'opt') {
                 opt(to, nick, args[1], args[2], args[3], args[4])
             }
             msgTimeout.add(to);
