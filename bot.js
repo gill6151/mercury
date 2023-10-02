@@ -134,11 +134,18 @@ fs.open('./config/usersettings.json','r',function(err, fd){
           if(err) {
               console.log(err);
           }
-          console.log("usersettings.json did not exist, it has been created");
+          console.log("[main.setup] usersettings.json did not exist, it has been created");
       });
       fs.writeFileSync('./config/usersettings.json', "\{\n\}")
     } else {
-      console.log("usersettings.json exists, continuing");
+      console.log("[main] usersettings.json exists, continuing");
     }
   });
 console.log('[main.irc] Connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);
+
+process.on('uncaughtException', function (err) {
+    console.error(err);
+    if (config.errorhandling.log_errors_to_irc == 'true') {
+        bot.say(config.errorhandling.error_channel, errorMsg+" "+err.stack.split('\n',1).join(" "))
+    }
+}); 

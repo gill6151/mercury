@@ -8,11 +8,16 @@
         ],
         "nickname": "mercury",
         "username": "mercury",
-        "realname": "git.supernets.org/hogwart7/mercury",
+        "realname": "git.supernets.org/hgw/mercury",
         "autorejoin": "true",
         "floodprotection": "false",
         "floodprotectiondelay": "0",
         "prefix": "m!"
+    },
+    "errorhandling": {
+        "error_logging": "true",
+        "error_channel": "#CHANNELTOSENDERRORSTO",
+        "error_channel_pass": ""
     },
     "colours": {
         "date": "11",
