@@ -135,7 +135,7 @@ bot.addListener('message', function(nick, to, text, from) {
         feed(to, nick, args[1], args[2]);
     } else if (args[0] === config.irc.prefix+'twitter') {
         twitter(to, args[1], args[2])
-    } else if (args[0] === config.irc.prefix+'set') {
+    } else if (args[0] === config.irc.prefix+'opt') {
         opt(to, nick, args[1], args[2], args[3])
     }
 });
