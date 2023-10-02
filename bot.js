@@ -1,19 +1,19 @@
+var config = require('./config/default.json');
 var irc = require("irc");
-var config = require('config');
 var fs = require("fs");
 var readline = require('readline');
 const { Worker } = require('worker_threads');
 //var randomWords = require('better-random-words');
 
-var bot = new irc.Client(config.get('irc.server'), config.get('irc.nickname'), {
-    channels: config.get('irc.channels'),
-    secure: config.get('irc.ssl'),
-    port: config.get('irc.port'),
-    autoRejoin: config.get('irc.autorejoin'),
-    userName: config.get('irc.username'),
-    realName: config.get('irc.realname'),
-    floodProtection: config.get('irc.floodprotection'),
-    floodProtectionDelay: config.get('irc.floodprotectiondelay')
+var bot = new irc.Client(config.irc.server, config.irc.nickname, {
+    channels: config.irc.channels,
+    secure: config.irc.ssl,
+    port: config.irc.port,
+    autoRejoin: config.irc.autorejoin,
+    userName: config.irc.username,
+    realName: config.irc.realname,
+    floodProtection: config.irc.floodprotection,
+    floodProtectionDelay: config.irc.floodprotectiondelay
 });
 
 const timer = ms => new Promise(res => setTimeout(res, ms))
