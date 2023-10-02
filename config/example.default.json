@@ -10,7 +10,9 @@
         "username": "mercury",
         "realname": "git.supernets.org/hgw/mercury",
         "autorejoin": "true",
-        "prefix": "m!"
+        "prefix": "m!",
+        "settings_auth_enable": "true",
+        "settings_auth_hostmask": "~user@supernets.org"
     },
     "floodprotect": {
         "flood_protection": "false",

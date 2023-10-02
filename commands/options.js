@@ -1,12 +1,13 @@
 const config = require('../config/default.json')
 const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-const { d1, d2, d3, d4, d5 } = workerData;
+const { d1, d2, d3, d4, d5, d6 } = workerData;
 var user = d1;
 var setting = d2;
 var setting2 = d3;
 var value = d4;
 var value2 = d5;
+var hostmask = d6
 const fs = require('fs-extra')
 let Parser = require('rss-parser');
 let parser = new Parser({
@@ -131,11 +132,56 @@ async function alias(setting, value, url, nick) {
     }
 }
 
-async function get(setting) {
-    consoleLog('[options.get] Getting value of '+setting)
+async function get(setting, hostmask) {
+    if (setting == "hostmask") {
+        sendUpstream('Your hostmask ==> '+hostmask)
+    } else {
+        consoleLog('[options.get] Getting value of '+setting)
+        var file = editJsonFile('/home/node/app/config/default.json')
+        consoleLog(setting + ' ==> ' + file.get(setting));
+        if ( file.get(setting) == undefined) {
+            sendUpstream(setting + 'is not a valid setting')
+        } else {
+            sendUpstream(setting + ' ==> ' + file.get(setting))
+        }
+    }
+}
+
+async function set(setting, value, value2, hostmask) {
+    content = []
+    if (value2 == "-s" || value2 == '--spaces') {
+        consoleLog('[options.set] ' + value2+' called, replacing all dashes with spaces')
+        var value = value.replace(/-/g,' ')
+    }
     var file = editJsonFile('/home/node/app/config/default.json')
-    console.log(file.get(setting));
-    sendUpstream(file.get(setting))
+    var disallowedSettings = [
+        "irc",
+        "twitter",
+        "motd"
+    ]
+    var disallowedCheck = setting.split(".")
+    var disallowedCheck = disallowedCheck[0]
+    if (config.irc.settings_auth_enable == 'true' ) {
+        if (hostmask != config.irc.settings_auth_hostmask) {
+            consoleLog('[options.set] Unauthorised user '+hostmask+' attempted to set '+setting+' to '+value)
+            sendUpstream(errorMsg+' You are not permitted to perform this action')
+        }
+    }
+    if (file.get(setting) == undefined) {
+        consoleLog('[options.set] '+setting+' is not a valid setting')
+        sendUpstream(errorMsg+' '+setting+' is not a valid setting or has not been defined')
+    }
+    if (disallowedSettings.includes(disallowedCheck)) {
+        consoleLog('[options.set] '+hostmask+' attempted to edit disallowed setting category: '+disallowedCheck)
+        sendUpstream(errorMsg+" You may not modify this setting")
+    }
+    var oldvalue = file.get(setting)
+    file.set(setting, value);
+    file.save();
+    content.push(setting+' ==> ' +oldvalue+' (PREVIOUS)')
+    content.push(setting+ ' ==> '+file.get(setting)+' (UPDATED)')
+    var output = content.join("\n")
+    sendUpstream(output)
 }
 
 if (setting === 'feed') {
@@ -143,9 +189,11 @@ if (setting === 'feed') {
 } else if (setting === 'list') {
     feed(user, setting2)
 } else if (setting === 'get') {
-    get(setting2);
+    get(setting2, hostmask);
 } else if(setting === 'alias') {
     alias(setting2, value, value2, user)
+} else if(setting === 'set') {
+    set(setting2, value, value2, hostmask)
 } else {
     sendUpstream(errorMsg+' '+setting+' is not a valid option')
 }

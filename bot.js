@@ -43,11 +43,25 @@ function consoleLog(log) {
     }
 }
 
-function openPostWorker(chan, command, d1, d2, d3, d4, d5) {
+var hostmask = null
+
+function checkUserHostmask(user) {
+    return new Promise(function (resolve, reject) {
+        setTimeout(() => {
+            bot.whois(user, function(callback) {
+                hostmask = callback.user+"@"+callback.host
+                consoleLog('[main.checkUserHostmask] User hostmask is '+hostmask)
+                resolve(hostmask)
+            })
+        }, 750)
+    })
+}
+
+function openPostWorker(chan, command, d1, d2, d3, d4, d5, d6) {
     consoleLog(`[bot.openPostWorker] Opening ${command} worker`)
     const worker = new Worker(`./commands/${command}.js`, { 
         workerData: {
-        d1, d2, d3, d4, d5
+        d1, d2, d3, d4, d5, d6
         }
     });
     worker.once('message', (string) => {
@@ -61,7 +75,10 @@ async function help(chan, sub) {
 }
 
 async function opt(chan, user, setting, setting2, value, value2) {
-    openPostWorker(chan, 'options', user, setting, setting2, value, value2)
+    if (setting == 'set' || setting == "get") {
+        await checkUserHostmask(user)
+    }
+    openPostWorker(chan, 'options', user, setting, setting2, value, value2, hostmask)
 }
 
 async function feed(chan, nick, provfeed, n) {
