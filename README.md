@@ -2,7 +2,9 @@
 
 Simple & Customisable RSS Client for IRC.
 
-This bot is not completed, expect bugs/crashes/errors. Use in production is disadvised at this stage.
+This bot is not completed, expect bugs/crashes/errors. Use in production is disadvised at this stage. 
+
+There is a live demo of Mercury on [irc.supernets.org](ircs://irc.supernets.org:6697) in #mercury
 
 ![m!feed Example](/.screens/1.png?raw=true "m!feed Example")
 
