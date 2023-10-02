@@ -45,6 +45,18 @@ function consoleLog(log) {
 
 var hostmask = null
 
+function checkConfigValidity() {
+    consoleLog(`[bot.checkConfigValidity] Opening cvc worker`)
+    const worker = new Worker(`./commands/cvc.js`, {});
+    worker.once('message', (string) => {
+        if (string == 'kill') {
+            process.exit()
+        } else if (string == 'allg') {
+            consoleLog('[bot.checkConfigValidity] Config validity checked, seems all good, continuing with initialisation')
+        }
+    });
+}
+
 function checkUserHostmask(user) {
     return new Promise(function (resolve, reject) {
         setTimeout(() => {
@@ -163,9 +175,11 @@ bot.addListener('message', function(nick, to, text, from) {
             if (command === config.irc.prefix+'help') {
                 help(to, args[1]);
             } else if (command === config.irc.prefix+'feed') {
-                feed(to, nick, args[1], args[2]);
-            } else if (command === config.irc.prefix+'twitter') {
-                twitter(to, args[1], args[2])
+                if (args[1] == undefined ) {
+                    help(to, "feed")
+                } else {
+                    feed(to, nick, args[1], args[2]);
+                }
             } else if (command === config.irc.prefix+'opt') {
                 if (args[1] == undefined ) {
                     help(to, "opt")
@@ -185,21 +199,30 @@ bot.addListener('error', function(message) {
     consoleLog('[ERROR]' +message)
 });
 
-consoleLog('[bot.init] Welcome to Mercury');
-fs.open('./config/usersettings.json','r',function(err, fd){
-    if (err) {
-      fs.writeFile('./config/usersettings.json', '', function(err) {
-          if(err) {
-            consoleLog(err);
-          }
-          consoleLog("[bot.init] usersettings.json did not exist, it has been created");
+async function init() {
+    consoleLog('[bot.init] Welcome to Mercury');
+    consoleLog('[bot.init] Checking config validity')
+    checkConfigValidity()
+    await timer(1500)
+    consoleLog('[bot.init] Checking if user settings file exists')
+    fs.open('./config/usersettings.json','r',function(err, fd){
+        if (err) {
+          fs.writeFile('./config/usersettings.json', '', function(err) {
+              if(err) {
+                consoleLog(err);
+              }
+              consoleLog("[bot.init] User settings did not exist, it has been created for you");
+          });
+          fs.writeFileSync('./config/usersettings.json', "\{\n\}")
+        } else {
+            consoleLog("[bot.init] User settings file exists");
+        }
       });
-      fs.writeFileSync('./config/usersettings.json', "\{\n\}")
-    } else {
-        consoleLog("[bot.init] usersettings.json exists, continuing");
-    }
-  });
-consoleLog('[bot.init] Connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);
+    await timer(100)
+    consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);    
+}
+
+init()
 
 process.on('uncaughtException', function (err) {
     console.error(err);
