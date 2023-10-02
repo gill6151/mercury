@@ -83,7 +83,9 @@ function openPostWorker(chan, command, d1, d2, d3, d4, d5, d6) {
 }
 
 async function help(chan, sub) {
-    var sub = sub.toLowerCase()
+    if (sub != undefined ) {
+        var sub = sub.toLowerCase()
+    }
     openPostWorker(chan, 'help', sub)
 }
 
