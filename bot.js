@@ -5,7 +5,7 @@ var readline = require('readline');
 const { Worker } = require('worker_threads');
 //var randomWords = require('better-random-words');
 
-var connconfig = { //edit your shit here
+var connconfig = {
     server: config.get('irc.server'),
     port: config.get('irc.port'),
     SSL: config.get('irc.port'),
@@ -34,53 +34,36 @@ async function help(chan, sub) {
     }
     if (sub === "default") {
         bot.say(chan, 'Mercury - https://git.supernets.org/hogwart7/mercury')
+        bot.say(chan, 'm!l5 [FEED] - Return the last 5 entries in any RSS feed.')
         bot.say(chan, "m!set [OPTION] [VALUE] - run r!help set for details")
     }
 }
 
-
-async function rspam(chan, amt) {
-    var arr = []
-    if (amt > 10000) {
-        bot.say(chan, "no")
-    } else {
-        if (amt === undefined) {
-            var amt = 100
-        }
-        for(var i=0; i < amt; i++){
-            var string = generateRandomString(70);
-            await timer(2);
-            arr.push(string)
-        }
-        var output = arr.join("\n")
-        bot.say(chan, output);
+async function feed(chan, provfeed, n) {
+    if (provfeed === undefined) {
+        bot.say(chan, "No feed has been provided.")
     }
-}
-
-
-async function godwords(chan, amt) {
-    if (amt > 100000) {
-        bot.say(chan, "no")
-    } else {
-        if (amt === undefined) {
-            var amt = 50
-        }
-        const worker = new Worker('./commands/godwords.js', { 
-            workerData: {
-                amt
-            }
-        });
-        worker.once('message', (string) => {
-            console.log('Received string from worker, posting.');
-            bot.say(chan, string);
-        });
+    if (n === undefined) {
+        var n = 5;
     }
+    const worker = new Worker('./commands/feed.js', { 
+        workerData: {
+            provfeed,
+            n
+        }
+    });
+    worker.once('message', (string) => {
+        console.log('Received output from last5 worker, posting.');
+        bot.say(chan, string);
+    });
 }
 
 bot.addListener('message', function(nick, to, text, from) {
     var args = text.split(' ');
     if (args[0] === 'm!help') {
         help(to, args[1]);
+    } else if (args[0] === 'm!feed') {
+        feed(to, args[1], args[2]);
     }
 });
 
@@ -88,4 +71,4 @@ bot.addListener('error', function(message) {
 	console.log('error: ', message);
 });
 
-console.log('Starting Fascinus');
+console.log('Starting Mercury');

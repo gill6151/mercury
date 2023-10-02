@@ -9,5 +9,9 @@
         "nickname": "mercury",
         "username": "mercury",
         "realname": "git.supernets.org/hogwart7/mercury"
+    },
+    "feed": {
+        "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",
+        "body_max_chars": "200"
     }
 }

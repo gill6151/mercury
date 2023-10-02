@@ -5,5 +5,4 @@ services:
         build: .
         restart: always
         volumes:
-            - './config/default.json:/home/node/app/config/default.json'
-            - './config/settings.txt:/home/node/app/config/settings.txt'
+            - './config:/home/node/app/config'

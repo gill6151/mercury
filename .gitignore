@@ -132,4 +132,3 @@ dist
 .env
 scratch
 config/default.json
-commands/godwords.js

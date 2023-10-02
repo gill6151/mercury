@@ -2,9 +2,12 @@
 
 RSS Parser for IRC
 
+This bot is currently in development and not fully functioning. Do not use in production.
+
 ## Commands
 
-- m!set [OPTION] [VALUE] - Changes a bot setting, more info to be added here later.
+- `m!feed [FEED] [ENTRIES]` - Return the last x amount of entries from any RSS feed.
+- `m!set [OPTION] [VALUE]` - Changes a bot setting, more info to be added here later.
 
 ## Deployment
 
