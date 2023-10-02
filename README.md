@@ -15,7 +15,7 @@ This bot is not completed, expect bugs/crashes/errors. Use in production is disa
 ## Deployment
 
 1. Install Docker (required) and Docker Compose (optional, but strongly recommended, this guide assumes you have it)
-2. Rename `config/example.default.json` to `config/default.json` and modify it accordingly. A list of variables and their descriptions can be found in this repos wiki. You do not need to do anything with `example.usersettings.json` unless you wish to predefine settings prior to the bots first start, the usersettings file will be made when any options are set at runtime.
+2. Rename `config/example.default.json` to `config/default.json` and modify it accordingly. A list of variables and their descriptions can be found in this repos wiki. You do not need to do anything with `example.usersettings.json` unless you wish to predefine settings prior to the bots first start, the usersettings file will be made on the first run if it does not exist.
 3. Run `docker compose up` to begin. Append `-d` to start in the background and `--build` if you make any changes to any files.
 
 ## Support
