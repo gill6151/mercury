@@ -10,8 +10,6 @@ const striptags = require("striptags");
 const moment = require('moment'); 
 const tz = require('moment-timezone');
 const timer = ms => new Promise(res => setTimeout(res, ms))
-const editJsonFile = require("edit-json-file");
-const { isNumber } = require('util');
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
@@ -47,7 +45,12 @@ async function fetchFeed(feedURL, n, nick) {
     } catch (e) {
         errorMessage(e, "NOFEEDS", nick);
     }
-    var n = n/feedsArr.length
+    if ( n < feedsArr.length ) {
+        var n = 1
+        content.push(warningMsg+" You must choose a number larger than your amount of feeds. Reverting to 1 per feed");
+    } else {
+        var n = n/feedsArr.length
+    }
     for (let i = 0; i < feedsArr.length; i++) {
         try {
             var newFeed = await parser.parseURL(feedsArr[i]);
@@ -61,10 +64,11 @@ async function fetchFeed(feedURL, n, nick) {
         if (n > newFeed.items.length) {
             var n = newFeed.items.length;
             content.push(warningMsg+" Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
-        } else if (n < 1) {
-            var n = config.feed.default_amount
-            content.push(warningMsg+" You requested a number less than 1. Reverting to default ("+config.feed.default_amount+")");
         }
+        //} else if (n < 1) {
+        //    var n = 1
+        //    content.push(warningMsg+" You requested a number less than 1. Reverting to default ("+config.feed.default_amount+")");
+        //}
         for (let i = 0; i < n; i++) {
             var data = newFeed.items[i]
             var title = data.title.replace(/(\r\n|\n|\r)/gm, " ") //remove line breaks
