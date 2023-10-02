@@ -1,5 +1,5 @@
 var config = require('./config/default.json');
-var uconfig = require('./config/usersettings.json');
+//var uconfig = require('./config/usersettings.json');
 var irc = require("irc");
 var fs = require("fs");
 var readline = require('readline');
@@ -74,6 +74,9 @@ async function opt(chan, user, setting, setting2, value, value2) {
 }
 
 async function feed(chan, nick, provfeed, n) {
+    var userconf = fs.readFileSync('./config/usersettings.json')
+    var uconfig = JSON.parse(userconf)
+    //var uconfig = require('./config/usersettings.json');
     if (provfeed === undefined) {
         bot.say(chan, errorMsg+" No feed has been provided.")
         return;
@@ -84,6 +87,9 @@ async function feed(chan, nick, provfeed, n) {
         var n = config.feed.default_amount;
     }
 
+    console.log(isValidUrl(provfeed))
+    console.log(provfeed === nick)
+    console.log(uconfig[nick].alias !== undefined)
     if (isValidUrl(provfeed) === true) {
         const worker = new Worker('./commands/feed-preset.js', { 
             workerData: {
