@@ -41,6 +41,7 @@
         "default_amount": "5"
     },
     "misc": {
-        "display_help_logo": "true"
+        "display_help_logo": "true",
+        "logging": "true"
     }
 }
