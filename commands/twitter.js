@@ -20,7 +20,11 @@ function errorMessage(error, code, extra) {
     console.log(error.code)
     if (code == "404") {
         var error = "[04ERROR] 404: " + extra + " not found"
-    } else {
+    } else if (error.code == "ECONNREFUSED") {
+        var error = "[04ERROR] Connection Refused"
+    } else if (error.code == "ERR_UNESCAPED_CHARACTERS"){
+        var error = "[04ERROR] Unescaped Characters"
+    } else { 
         var error = "[04ERROR] Unknown error"
     }
     
@@ -39,7 +43,11 @@ async function fetchFeed(feedURL, n) {
     try {
         var newFeed = await parser.parseURL(feedURL);
     } catch (e) {
-        errorMessage(e, "404", feedURL);
+        if (e.code !== undefined) {
+            errorMessage(e)
+        } else {
+            errorMessage(e, "404", feedURL);
+        }
     }
     
     if (n > newFeed.items.length) {
