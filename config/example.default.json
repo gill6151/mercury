@@ -16,5 +16,12 @@
     "feed": {
         "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13.4; rv:109.0) Gecko/20100101 Firefox/114.0",
         "body_max_chars": "200"
+    },
+    "twitter": {
+        "nitter_instances": [
+            "nitter.1d4.us",
+            "nitter.it",
+            "nitter.pufe.org"
+        ]
     }
 }
