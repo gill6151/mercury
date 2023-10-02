@@ -46,22 +46,7 @@ function openPostWorker(chan, command, d1, d2, d3, d4, d5) {
 }
 
 async function help(chan, sub) {
-    if (sub === undefined) {
-        var sub = "default"
-    }
-    if (sub === "default") {
-        if (config.misc.display_help_logo === true ){
-            bot.say(chan, '   ____ ___  ___  ____________  _________  __')
-            bot.say(chan, '  / __ `__ \\/ _ \\/ ___/ ___/ / / / ___/ / / /')
-            bot.say(chan, ' / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / ')
-            bot.say(chan, '/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
-            bot.say(chan, '                                    /____/   ')
-        }
-        bot.say(chan, 'Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
-        bot.say(chan, 'm!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
-        bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
-        bot.say(chan, "m!opt [CATEGORY] [OPTION] [VALUE] - Control bot options, see wiki for info on usage.")
-    }
+    openPostWorker(chan, 'help', sub)
 }
 
 async function opt(chan, user, setting, setting2, value, value2) {

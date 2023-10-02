@@ -21,6 +21,7 @@
         "author": "08",
         "body": "00",
         "link": "02",
+        "help_logo": "07",
         "warning": "08",
         "error": "05"
     },
@@ -38,5 +39,8 @@
             "nitter.pufe.org"
         ],
         "default_amount": "5"
+    },
+    "misc": {
+        "display_help_logo": "true"
     }
 }
