@@ -1,0 +1,8 @@
+{
+  "example": {
+    "feeds": [
+      "https://git.supernets.org/hogwart7/mercury.rss",
+      "https://git.supernets.org/hogwart7/fascinus.rss"
+    ]
+  }
+}

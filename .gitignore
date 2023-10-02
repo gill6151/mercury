@@ -132,3 +132,4 @@ dist
 .env
 scratch
 config/default.json
+config/usersettings.json

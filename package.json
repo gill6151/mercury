@@ -5,7 +5,9 @@
   "main": "bot.js",
   "dependencies": {
     "config": "^3.3.9",
+    "edit-json-file": "^1.7.0",
     "fs": "^0.0.1-security",
+    "fs-extra": "^11.1.1",
     "irc": "^0.5.2",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",

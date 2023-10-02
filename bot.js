@@ -37,6 +37,28 @@ async function help(chan, sub) {
     }
 }
 
+async function opt(chan, user, setting, setting2, value) {
+    //if (provfeed === undefined) {
+    //    bot.say(chan, errorMsg+" No feed has been provided.")
+    //    return;
+    //}
+    //if (n === undefined) {
+    //    var n = config.feed.default_amount;
+    //}
+    const worker = new Worker('./commands/options.js', { 
+        workerData: {
+            user,
+            setting,
+            setting2,
+            value
+        }
+    });
+    worker.once('message', (string) => {
+        console.log('Received output from last5 worker, posting.');
+        bot.say(chan, string);
+    });
+}
+
 async function feed(chan, provfeed, n) {
     if (provfeed === undefined) {
         bot.say(chan, errorMsg+" No feed has been provided.")
@@ -86,7 +108,7 @@ bot.addListener('message', function(nick, to, text, from) {
     } else if (args[0] === config.irc.prefix+'twitter') {
         twitter(to, args[1], args[2])
     } else if (args[0] === config.irc.prefix+'set') {
-        
+        opt(to, nick, args[1], args[2], args[3])
     }
 });
 
