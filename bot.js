@@ -51,7 +51,7 @@ function openPostWorker(chan, command, d1, d2, d3, d4, d5) {
         }
     });
     worker.once('message', (string) => {
-        consoleLog(`[bot.openPostWorker] Got output from ${command}, sending to `+chan);
+        consoleLog(`[bot.openPostWorker.finalising] Got output from ${command}, sending to `+chan);
         bot.say(chan, string);
     });
 }
@@ -79,7 +79,7 @@ async function feed(chan, nick, provfeed, n) {
         var provfeed = nick;
     }
     if (n === undefined) {
-        consoleLog('[bot.feed] no amount was passed, reverting to default')
+        consoleLog('[bot.feed] No post was passed, reverting to '+config.feed.default_amount+', your set default.')
         var n = config.feed.default_amount;
     }
 
@@ -87,9 +87,8 @@ async function feed(chan, nick, provfeed, n) {
         consoleLog('[bot.feed] Valid URL requested')
         openPostWorker(chan, 'feed-preset', provfeed, n);
 
-    } else if (predefinedFeeds.includes(predefString[0])) {
-        console.log(predefString[0])
-        //bot.say(chan, "Should work good")
+    } else if (predefinedFeeds.includes(predefString[0])) { //Predefined Feed lookup
+        consoleLog('[bot.feed] Detected predefined feed: '+predefString[0])
         openPostWorker(chan, "feed-predef", provfeed, n)
    
     } else if (provfeed === nick) { //User Feed Lookup
@@ -157,21 +156,21 @@ bot.addListener('error', function(message) {
     consoleLog('[ERROR]' +message)
 });
 
-console.log('[main] Starting Mercury');
+consoleLog('[bot.init] Welcome to Mercury');
 fs.open('./config/usersettings.json','r',function(err, fd){
     if (err) {
       fs.writeFile('./config/usersettings.json', '', function(err) {
           if(err) {
-              console.log(err);
+            consoleLog(err);
           }
-          console.log("[main.setup] usersettings.json did not exist, it has been created");
+          consoleLog("[bot.init] usersettings.json did not exist, it has been created");
       });
       fs.writeFileSync('./config/usersettings.json', "\{\n\}")
     } else {
-      console.log("[main] usersettings.json exists, continuing");
+        consoleLog("[bot.init] usersettings.json exists, continuing");
     }
   });
-console.log('[main.irc] Connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);
+consoleLog('[bot.init] Connecting to '+config.irc.server+'/'+config.irc.port+' as '+config.irc.nickname);
 
 process.on('uncaughtException', function (err) {
     console.error(err);

@@ -91,7 +91,7 @@ async function twitter(feedURL, n) {
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
             var syncDate = date.tz(config.feed.timezone)
-            console.log(syncDate.format())
+            consoleLog('[feed-predef.twitter] Got tweet from '+syncDate.format())
             var date = syncDate.format(config.feed.time_format)
         } else {
             var date = data.pubDate
@@ -134,7 +134,7 @@ async function github(user, repo, type, n) {
             errorMessage(e, "404", feedURL);
         }
     }
-    console.log(newFeed.items[1])
+    //consoleLog(newFeed.items[1])
     if (n > newFeed.items.length) {
         var n = newFeed.items.length;
         content.push(warningMsg+" Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
@@ -158,7 +158,7 @@ async function github(user, repo, type, n) {
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
             var syncDate = date.tz(config.feed.timezone)
-            console.log(syncDate.format())
+            //console.log(syncDate.format())
             var date = syncDate.format(config.feed.time_format)
         } else {
             var date = data.pubDate
@@ -184,13 +184,16 @@ async function github(user, repo, type, n) {
 
 var provfeed = provfeed.toLowerCase().split("/")
 if (provfeed[0] == "twitter") {
+    consoleLog("[feed-predef] Running twitter function")
     twitter(provfeed[1], n);
 } else if (provfeed[0] == "github") {
     if (provfeed[3] == undefined) {
+        consoleLog("[feed-predef] No GitHub feed type provided, defaulting to commits")
         var type = "commits"
     } else {
         var type = provfeed[3]
     }
+    consoleLog("[feed-predef] Running GitHub function")
     github(provfeed[1], provfeed[2], type, n)
 }
 
