@@ -1,4 +1,5 @@
 const config = require('../config/default.json')
+const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
 const { d1, d2 } = workerData;
 var provfeed = d1;
@@ -89,7 +90,11 @@ async function twitter(feedURL, n) {
 
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
-            var syncDate = date.tz(config.feed.timezone)
+            if (uconfig[nick].timezone != undefined) {
+                var syncDate = date.tz(uconfig[nick].timezone) 
+            } else {
+                var syncDate = date.tz(config.feed.timezone)
+            }
             consoleLog('[feed-predef.twitter] Got tweet from '+syncDate.format())
             var date = syncDate.format(config.feed.time_format)
         } else {
@@ -156,7 +161,11 @@ async function github(user, repo, type, n) {
 
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
-            var syncDate = date.tz(config.feed.timezone)
+            if (uconfig[nick].timezone != undefined) {
+                var syncDate = date.tz(uconfig[nick].timezone) 
+            } else {
+                var syncDate = date.tz(config.feed.timezone)
+            }
             //console.log(syncDate.format())
             var date = syncDate.format(config.feed.time_format)
         } else {

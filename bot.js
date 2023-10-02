@@ -75,7 +75,7 @@ async function help(chan, sub) {
 }
 
 async function opt(chan, user, setting, setting2, value, value2) {
-    if (setting == 'set' || setting == "get") {
+    if (setting == 'operset' || setting == "get") {
         await checkUserHostmask(user)
     }
     openPostWorker(chan, 'options', user, setting, setting2, value, value2, hostmask)
@@ -105,7 +105,7 @@ async function feed(chan, nick, provfeed, n) {
 
     if (isValidUrl(provfeed) === true) { //URL Lookup
         consoleLog('[bot.feed] Valid URL requested')
-        openPostWorker(chan, 'feed-preset', provfeed, n);
+        openPostWorker(chan, 'feed-preset', provfeed, n, nick);
 
     } else if (predefinedFeeds.includes(predefString[0])) { //Predefined Feed lookup
         consoleLog('[bot.feed] Detected predefined feed: '+predefString[0])
@@ -122,7 +122,7 @@ async function feed(chan, nick, provfeed, n) {
     } else if (uconfig[nick].alias !== undefined ) { //Alias Lookup
         consoleLog('[bot.feed] Alias requested')
         var provfeed = uconfig[nick].alias[provfeed.toUpperCase()]
-        openPostWorker(chan, "feed-preset", provfeed, n);
+        openPostWorker(chan, "feed-preset", provfeed, n, nick);
     } else {
         consoleLog('[bot.feed] No valid feed entered')
         bot.say(chan, errorMsg+" Your chosen feed or alias is not valid")

@@ -90,9 +90,13 @@ async function fetchFeed(feedURL, n, nick) {
                 .replace(/\s{2,}/g, ' ') //idk
             var body = striptags(body);
         if (data.isoDate !== undefined) {
-                var date = moment(data.isoDate)
+            var date = moment(data.isoDate)
+            if (uconfig[nick].timezone != undefined) {
+                var syncDate = date.tz(uconfig[nick].timezone) 
+            } else {
                 var syncDate = date.tz(config.feed.timezone)
-                var date = syncDate.format(config.feed.time_format)
+            }
+            var date = syncDate.format(config.feed.time_format)
             } else {
                 var date = data.pubDate
             }

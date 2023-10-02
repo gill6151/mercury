@@ -15,6 +15,8 @@ let parser = new Parser({
 });
 const editJsonFile = require("edit-json-file");
 const timer = ms => new Promise(res => setTimeout(res, ms))
+const moment = require('moment-timezone');
+
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
@@ -132,9 +134,12 @@ async function alias(setting, value, url, nick) {
     }
 }
 
-async function get(setting, hostmask) {
+async function get(setting, hostmask, nick) {
     if (setting == "hostmask") {
         sendUpstream('Your hostmask ==> '+hostmask)
+    } else if (setting == "user.tz" || setting == "user.timezone" ) {
+        var file = editJsonFile('/home/node/app/config/usersettings.json')
+        sendUpstream(setting + ' ==> ' + file.get(nick+".timezone"))
     } else {
         consoleLog('[options.get] Getting value of '+setting)
         var file = editJsonFile('/home/node/app/config/default.json')
@@ -147,10 +152,34 @@ async function get(setting, hostmask) {
     }
 }
 
-async function set(setting, value, value2, hostmask) {
+async function set(setting, value, value2, nick) {
+    if (setting == 'user.tz' || setting == 'user.timezone') {
+        content = []
+        var tzarray = moment.tz.names().map(a => a.toLowerCase())
+        if (tzarray.includes(value.toLowerCase()) == false) {
+            consoleLog('[options.set.tz] Invalid timezone entered')
+            sendUpstream(errorMsg+' Invalid timezone entered, not changing')
+        }
+        var file = editJsonFile('/home/node/app/config/usersettings.json');
+        if (uconfig[nick].timezone == undefined || uconfig[nick].timezone == "" ) {
+            var oldvalue = "Unset"
+        } else {
+            var oldvalue = file.get(nick+".timezone")
+        }
+        consoleLog('[options.set.tz] Adding/editing the timezone for'+nick+': '+oldvalue+' ==> '+value)
+        file.set(nick+".timezone", value)
+        file.save()
+        content.push(setting+' ==> ' +oldvalue+' (PREVIOUS)')
+        content.push(setting+ ' ==> '+file.get(nick+".timezone")+' (UPDATED)')
+        var output = content.join("\n")
+        sendUpstream(output)    
+    }
+}
+
+async function operset(setting, value, value2, hostmask) {
     content = []
     if (value2 == "-s" || value2 == '--spaces') {
-        consoleLog('[options.set] ' + value2+' called, replacing all dashes with spaces')
+        consoleLog('[options.operset] ' + value2+' called, replacing all dashes with spaces')
         var value = value.replace(/-/g,' ')
     }
     var file = editJsonFile('/home/node/app/config/default.json')
@@ -163,17 +192,24 @@ async function set(setting, value, value2, hostmask) {
     var disallowedCheck = disallowedCheck[0]
     if (config.irc.settings_auth_enable == 'true' ) {
         if (hostmask != config.irc.settings_auth_hostmask) {
-            consoleLog('[options.set] Unauthorised user '+hostmask+' attempted to set '+setting+' to '+value)
+            consoleLog('[options.operset] Unauthorised user '+hostmask+' attempted to set '+setting+' to '+value)
             sendUpstream(errorMsg+' You are not permitted to perform this action')
         }
     }
     if (file.get(setting) == undefined) {
-        consoleLog('[options.set] '+setting+' is not a valid setting')
+        consoleLog('[options.operset] '+setting+' is not a valid setting')
         sendUpstream(errorMsg+' '+setting+' is not a valid setting or has not been defined')
     }
     if (disallowedSettings.includes(disallowedCheck)) {
-        consoleLog('[options.set] '+hostmask+' attempted to edit disallowed setting category: '+disallowedCheck)
+        consoleLog('[options.operset] '+hostmask+' attempted to edit disallowed setting category: '+disallowedCheck)
         sendUpstream(errorMsg+" You may not modify this setting")
+    }
+    if (setting == "feed.timezone") {
+        var tzarray = moment.tz.names().map(a => a.toLowerCase())
+        if (tzarray.includes(value.toLowerCase()) == false) {
+            consoleLog('[options.operset] Invalid timezone entered')
+            content.push(warningMsg+' Invalid timezone entered, changing anyways but output will default to Etc/UTC')
+        }
     }
     var oldvalue = file.get(setting)
     file.set(setting, value);
@@ -189,11 +225,13 @@ if (setting === 'feed') {
 } else if (setting === 'list') {
     feed(user, setting2)
 } else if (setting === 'get') {
-    get(setting2, hostmask);
+    get(setting2, hostmask, user);
 } else if(setting === 'alias') {
     alias(setting2, value, value2, user)
+} else if(setting === 'operset') {
+    operset(setting2, value, value2, hostmask)
 } else if(setting === 'set') {
-    set(setting2, value, value2, hostmask)
-} else {
+    set(setting2, value, value2, user)
+}  else {
     sendUpstream(errorMsg+' '+setting+' is not a valid option')
 }

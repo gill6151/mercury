@@ -1,8 +1,10 @@
 const config = require('../config/default.json')
+const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-const { d1, d2 } = workerData;
+const { d1, d2, d3 } = workerData;
 var provfeed = d1;
 var n = d2;
+var nick = d3;
 let Parser = require('rss-parser');
 let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},
@@ -75,7 +77,11 @@ async function fetchFeed(feedURL, n) {
         var body = striptags(body);
        if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
-            var syncDate = date.tz(config.feed.timezone)
+            if (uconfig[nick].timezone != undefined) {
+                var syncDate = date.tz(uconfig[nick].timezone) 
+            } else {
+                var syncDate = date.tz(config.feed.timezone)
+            }
             var date = syncDate.format(config.feed.time_format)
         } else {
             var date = data.pubDate
