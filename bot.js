@@ -34,7 +34,7 @@ async function help(chan, sub) {
     }
     if (sub === "default") {
         bot.say(chan, 'Mercury - https://git.supernets.org/hogwart7/mercury')
-        bot.say(chan, "r!set [OPTION] [VALUE] - run r!help set for details")
+        bot.say(chan, "m!set [OPTION] [VALUE] - run r!help set for details")
     }
 }
 
@@ -79,7 +79,7 @@ async function godwords(chan, amt) {
 
 bot.addListener('message', function(nick, to, text, from) {
     var args = text.split(' ');
-    if (args[0] === 'r!help') {
+    if (args[0] === 'm!help') {
         help(to, args[1]);
     }
 });
