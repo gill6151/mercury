@@ -5,16 +5,6 @@ var readline = require('readline');
 const { Worker } = require('worker_threads');
 //var randomWords = require('better-random-words');
 
-var connconfig = {
-    server: config.get('irc.server'),
-    port: config.get('irc.port'),
-    SSL: config.get('irc.ssl'),
-    channels: config.get('irc.channels'),
-    botName: config.get('irc.nickname'),
-    userName: config.get('irc.username'),
-    realName: config.get('irc.realname')
-};
-
 var bot = new irc.Client(config.get('irc.server'), config.get('irc.nickname'), {
     channels: config.get('irc.channels'),
     secure: config.get('irc.ssl'),
