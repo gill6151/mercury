@@ -50,11 +50,13 @@ async function help(chan, sub) {
         var sub = "default"
     }
     if (sub === "default") {
-        bot.say(chan, '   ____ ___  ___  ____________  _________  __')
-        bot.say(chan, '  / __ `__ \\/ _ \\/ ___/ ___/ / / / ___/ / / /')
-        bot.say(chan, ' / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / ')
-        bot.say(chan, '/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
-        bot.say(chan, '                                    /____/   ')
+        if (config.misc.display_help_logo === true ){
+            bot.say(chan, '   ____ ___  ___  ____________  _________  __')
+            bot.say(chan, '  / __ `__ \\/ _ \\/ ___/ ___/ / / / ___/ / / /')
+            bot.say(chan, ' / / / / / /  __/ /  / /__/ /_/ / /  / /_/ / ')
+            bot.say(chan, '/_/ /_/ /_/\\___/_/   \\___/\\__,_/_/   \\__, /  ')
+            bot.say(chan, '                                    /____/   ')
+        }
         bot.say(chan, 'Mercury RSS Client - https://git.supernets.org/hogwart7/mercury')
         bot.say(chan, 'm!feed [USER/FEED/ALIAS] [ENTRIES] - Return the last x amount of entries from any RSS feed or your own saved feeds (if you have saved feeds)')
         bot.say(chan, "m!twitter [USER] [ENTRIES] - Return the last x amount of tweets from a particular user")
