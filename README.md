@@ -16,10 +16,6 @@ RSS Parser for IRC
 
 If you need assistance with installation or usage, join #5000 on `irc.supernets.org`
 
-## Credits
-
-- [phy1729/banter](https://github.com/phy1729/banter) - $art uses a version of banter modified to allow URLs in place of local image files. These changes will be published upstream once refined.
-
 ## License
 
 ISC License
