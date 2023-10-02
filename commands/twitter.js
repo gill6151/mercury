@@ -1,6 +1,8 @@
 const config = require('../config/default.json')
 const { parentPort, workerData } = require('worker_threads');
-const { provfeed, n } = workerData;
+const { d1, d2 } = workerData;
+var provfeed = d1;
+var n = d2
 let Parser = require('rss-parser');
 let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},

@@ -33,6 +33,18 @@ const isValidUrl = urlString=> {
     return !!urlPattern.test(urlString);
 }
 
+function openPostWorker(chan, command, d1, d2, d3, d4, d5) {
+    const worker = new Worker(`./commands/${command}.js`, { 
+        workerData: {
+        d1, d2, d3, d4, d5
+        }
+    });
+    worker.once('message', (string) => {
+        console.log(`${command} worker has signalled it has completed, sending output to IRC`);
+        bot.say(chan, string);
+    });
+}
+
 async function help(chan, sub) {
     if (sub === undefined) {
         var sub = "default"
@@ -51,32 +63,13 @@ async function help(chan, sub) {
 }
 
 async function opt(chan, user, setting, setting2, value, value2) {
-    //if (provfeed === undefined) {
-    //    bot.say(chan, errorMsg+" No feed has been provided.")
-    //    return;
-    //}
-    //if (n === undefined) {
-    //    var n = config.feed.default_amount;
-    //}
-    const worker = new Worker('./commands/options.js', { 
-        workerData: {
-            user,
-            setting,
-            setting2,
-            value,
-            value2
-        }
-    });
-    worker.once('message', (string) => {
-        console.log('Received output from options worker, posting.');
-        bot.say(chan, string);
-    });
+    openPostWorker(chan, 'options', user, setting, setting2, value, value2)
 }
 
 async function feed(chan, nick, provfeed, n) {
     var userconf = fs.readFileSync('./config/usersettings.json')
     var uconfig = JSON.parse(userconf)
-    //var uconfig = require('./config/usersettings.json');
+
     if (provfeed === undefined) {
         bot.say(chan, errorMsg+" No feed has been provided.")
         return;
@@ -90,50 +83,21 @@ async function feed(chan, nick, provfeed, n) {
     console.log(isValidUrl(provfeed))
     console.log(provfeed === nick)
     console.log(uconfig[nick].alias !== undefined)
-    if (isValidUrl(provfeed) === true) {
-        const worker = new Worker('./commands/feed-preset.js', { 
-            workerData: {
-                provfeed,
-                n
-            }
-        });
-        worker.once('message', (string) => {
-            console.log('Received output from feed-preset worker, posting.');
-            bot.say(chan, string);
-            return;
-        });
-    } else if (provfeed === nick) {
-        if ( uconfig[nick] !== undefined ) {
-            const worker = new Worker('./commands/feed-list.js', { 
-                workerData: {
-                    provfeed,
-                    n,
-                    nick
-                }
-            });
-            worker.once('message', (string) => {
-                console.log('Received output from feed-list worker, posting.');
-                bot.say(chan, string);
-                return;
-            });
-        } else {
+
+    if (isValidUrl(provfeed) === true) { //URL Lookup
+        openPostWorker(chan, 'feed-preset', provfeed, n);
+    } else if (provfeed === nick) { //User Feed Lookup
+        if ( uconfig[nick] !== undefined ) { //If users nickname exists in json file
+            openPostWorker(chan, 'feed-list', provfeed, n, nick);
+        } else { //If it does not
             bot.say(chan, "You have no saved feeds")
             return;
         }
-    } else if (uconfig[nick].alias !== undefined ) {
+    } else if (uconfig[nick].alias !== undefined ) { //Alias Lookup
         var provfeed = uconfig[nick].alias[provfeed]
-        const worker = new Worker('./commands/feed-preset.js', { 
-            workerData: {
-                provfeed,
-                n,
-                nick
-            }
-        });
-        worker.once('message', (string) => {
-            console.log('Received output from feed-list worker, posting.');
-            bot.say(chan, string);
-            return;
-        });
+        openPostWorker(chan, "feed-preset", provfeed, n);
+    } else {
+        bot.say(chan, 'Not sure how you managed to get this error, but good job')
     }
 }
 
@@ -145,16 +109,7 @@ async function twitter(chan, provfeed, n) {
     if (n === undefined) {
         var n = config.twitter.default_amount;
     }
-    const worker = new Worker('./commands/twitter.js', { 
-        workerData: {
-            provfeed,
-            n
-        }
-    });
-    worker.once('message', (string) => {
-        console.log('Received output from twitter worker, posting.');
-        bot.say(chan, string);
-    });
+    openPostWorker(chan, "twitter", provfeed, n)
 }
 
 bot.addListener('message', function(nick, to, text, from) {

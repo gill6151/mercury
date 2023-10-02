@@ -1,7 +1,12 @@
 const config = require('../config/default.json')
 const uconfig = require('../config/usersettings.json')
 const { parentPort, workerData } = require('worker_threads');
-const { user, setting, setting2, value, value2 } = workerData;
+const { d1, d2, d3, d4, d5 } = workerData;
+var user = d1;
+var setting = d2;
+var setting2 = d3;
+var value = d4;
+var value2 = d5;
 const fs = require('fs-extra')
 let Parser = require('rss-parser');
 let parser = new Parser({
