@@ -1,3 +1,4 @@
+const config = require('../config/default.json')
 const { parentPort, workerData } = require('worker_threads');
 const { provfeed, n } = workerData;
 let Parser = require('rss-parser');
@@ -5,7 +6,6 @@ let parser = new Parser({
     headers: {'User-Agent': config.feed.useragent},
 });
 const striptags = require("striptags");
-const config = require('../config/default.json')
 
 async function sendUpstream(content) {
     var output = content.join("\n")
@@ -16,6 +16,10 @@ async function sendUpstream(content) {
 async function fetchFeed(feedURL, n) {
     var content = [];
     let newFeed = await parser.parseURL(feedURL);
+    if (n > newFeed.items.length) {
+        var n = newFeed.items.length;
+        content.push("[08WARNING] Your requested post amount exceeded the total available. Reverting to " + newFeed.items.length);
+    }
     //for (let i = 0; i < newFeed.items.length; i++) {
     for (let i = 0; i < n; i++) {
         var data = newFeed.items[i]
