@@ -162,12 +162,11 @@ async function github(user, repo, type, n, nick) {
 
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
-            if (uconfig[nick].timezone != undefined) {
+            try {
                 var syncDate = date.tz(uconfig[nick].timezone) 
-            } else {
+            } catch(e) {
                 var syncDate = date.tz(config.feed.timezone)
             }
-            //console.log(syncDate.format())
             var date = syncDate.format(config.feed.time_format)
         } else {
             var date = data.pubDate

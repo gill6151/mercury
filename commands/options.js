@@ -203,7 +203,12 @@ async function set(setting, value, value2, nick) {
             sendUpstream(errorMsg+' Invalid timezone entered, not changing')
         }
         var file = editJsonFile('/home/node/app/config/usersettings.json');
-        if (uconfig[nick].timezone == undefined || uconfig[nick].timezone == "" ) {
+        //try {
+        //    var oldvalue = file.get(nick+".timezone")
+        //} catch(e) {
+        //    var oldvalue = "Unset"
+        //}
+        if (file.get(nick+".timezone") == undefined || file.get(nick+".timezone") == "" ) {
             var oldvalue = "Unset"
         } else {
             var oldvalue = file.get(nick+".timezone")
