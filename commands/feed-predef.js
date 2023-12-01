@@ -91,9 +91,9 @@ async function twitter(feedURL, n, nick) {
 
         if (data.isoDate !== undefined) {
             var date = moment(data.isoDate)
-            if (uconfig[nick].timezone != undefined) {
+            try {
                 var syncDate = date.tz(uconfig[nick].timezone) 
-            } else {
+            } catch(e) {
                 var syncDate = date.tz(config.feed.timezone)
             }
             consoleLog('[feed-predef.twitter] Got tweet from '+syncDate.format())
