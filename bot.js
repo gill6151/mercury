@@ -39,6 +39,7 @@ const isValidUrl = urlString=> {
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // validate port and path
     '(\\?[;&a-z\\d%_.~+=-]*)?'+ // validate query string
     '(\\#[-a-z\\d_]*)?$','i'); // validate fragment locator
+    consoleLog('[bot.isValidUrl] Testing URL: '+urlString)
     return !!urlPattern.test(urlString);
 }
 
@@ -144,7 +145,7 @@ async function feed(chan, nick, provfeed, n) {
             bot.say(chan, "You have no saved feeds")
             return;
         }
-    } else if (uconfig[nick].alias !== undefined ) { //Alias Lookup
+    } else if (uconfig[nick].alias[provfeed.toUpperCase()] !== undefined ) { //Alias Lookup
         consoleLog('[bot.feed] Alias requested')
         var provfeed = uconfig[nick].alias[provfeed.toUpperCase()]
         openPostWorker(chan, "feed-preset", provfeed, n, nick);
