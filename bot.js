@@ -5,13 +5,26 @@
 //    /_/ /_/ /_/\___/_/   \___/\__,_/_/   \__, /  
 //     COLD HARD FEEDS                    /____/   
 //
-var config = require('./config/default.json');
+//var config = require('./config/default.json');
 //var uconfig = require('./config/usersettings.json');
 var irc = require("irc");
 var fs = require("fs");
 var readline = require('readline');
 const { Worker } = require('worker_threads');
+const { setMaxIdleHTTPParsers } = require("http");
 //var randomWords = require('better-random-words');
+
+const timer = ms => new Promise(res => setTimeout(res, ms))
+
+console.log('[bot] Checking if config file exists')
+if (fs.existsSync('./config/default.json')) {
+    var config = require('./config/default.json');
+    console.log('[bot] Config file exists, can proceed with initialisation')
+} else {
+    console.log('[bot] The config file, default.json, does not exist in the config folder. Mercury can not start.')
+    process.exit() 
+}
+timer(100)
 
 warningMsg = ''+config.colours.brackets+'['+config.colours.warning+'WARNING'+config.colours.brackets+']'
 errorMsg = ''+config.colours.brackets+'['+config.colours.error+'ERROR'+config.colours.brackets+']'
@@ -30,7 +43,6 @@ var bot = new irc.Client(config.irc.server, config.irc.nickname, {
 const msgTimeout = new Set();
 const msgTimeoutMsg = new Set();
 
-const timer = ms => new Promise(res => setTimeout(res, ms))
 
 const isValidUrl = urlString=> {
     var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // validate protocol
@@ -54,13 +66,13 @@ function consoleLog(log) {
 var hostmask = null
 
 function checkConfigValidity() {
-    consoleLog(`[bot.checkConfigValidity] Opening cvc worker`)
+    consoleLog(`[bot.checkConfigValidity] Opening config validator`)
     const worker = new Worker(`./commands/cvc.js`, {});
     worker.once('message', (string) => {
         if (string == 'kill') {
             process.exit()
         } else if (string == 'allg') {
-            consoleLog('[bot.checkConfigValidity] Config validity checked, seems all good, continuing with initialisation')
+            consoleLog('[bot.checkConfigValidity] Config seems valid, continuing')
         }
     });
 }
@@ -210,9 +222,6 @@ bot.addListener('error', function(message) {
 });
 
 async function init() {
-    consoleLog('[bot.init] Checking config validity')
-    checkConfigValidity()
-    await timer(1500)
     consoleLog('[bot.init] Checking if user settings file exists')
     fs.open('./config/usersettings.json','r',function(err, fd){
         if (err) {
@@ -222,7 +231,6 @@ async function init() {
                     consoleLog('[bot.init] [FATAL] User settings file could not be created. Mercury can not start')
                     process.exit()  
                 }
-                consoleLog("[bot.init] User settings does not exist, please hold...");
             });
             try {
                 fs.writeFileSync('./config/usersettings.json', "\{\n\}")
@@ -231,12 +239,16 @@ async function init() {
                 consoleLog('[bot.init] [FATAL] User settings file was created but is not writable, could be a permissions issue. Mercury can not start')
                 process.exit()
             }
+            timer(100)
             consoleLog('[bot.init] User settings file has been created')
         } else {
             consoleLog("[bot.init] User settings file exists");
         }
     });
-    await timer(100)
+    await timer(500)
+    consoleLog('[bot.init] Checking config validity')
+    checkConfigValidity()
+    await timer(2000)
     if (config.irc.ssl == "true") {
         consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' (SSL) as '+config.irc.nickname); 
     } else {
