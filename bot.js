@@ -248,7 +248,7 @@ async function init() {
     await timer(500)
     try {
         if (config.errorhandling.validity_override === "TRUE") {
-            consoleLog('[bot.init] Config validity override switch enabled, will not check for validity')
+            consoleLog('[bot.init] [WARNING] Config validity override switch enabled, will not check for validity. This may have unintended side-effects, if you run in to issues with this enabled, you are on your own.')
         }
     } catch(e) {
         consoleLog('[bot.init] Checking config validity')
