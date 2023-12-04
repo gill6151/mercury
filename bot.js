@@ -246,8 +246,14 @@ async function init() {
         }
     });
     await timer(500)
-    consoleLog('[bot.init] Checking config validity')
-    checkConfigValidity()
+    try {
+        if (config.errorhandling.validity_override === "TRUE") {
+            consoleLog('[bot.init] Config validity override switch enabled, will not check for validity')
+        }
+    } catch(e) {
+        consoleLog('[bot.init] Checking config validity')
+        checkConfigValidity()
+    }
     await timer(2000)
     if (config.irc.ssl == "true") {
         consoleLog('[bot.init] Initialisation completed, connecting to '+config.irc.server+'/'+config.irc.port+' (SSL) as '+config.irc.nickname); 
