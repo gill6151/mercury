@@ -41,7 +41,8 @@
         "body_max_chars": "200",
         "time_format": "DD MMM YYYY HH:mm:ss ZZ",
         "timezone": "Pacific/Auckland",
-        "default_amount": "5"
+        "default_amount": "5",
+        "show_feed_title": "true"
     },
     "twitter": {
         "nitter_instances": [

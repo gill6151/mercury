@@ -45,7 +45,7 @@ function checkValuesExist() {
         config.floodprotect.flood_protection, config.floodprotect.flood_protection_delay,
         config.errorhandling.error_logging, config.errorhandling.error_channel, config.errorhandling.error_channel_pass,
         config.colours.date, config.colours.brackets, config.colours.title, config.colours.author, config.colours.body, config.colours.link, config.colours.help_logo, config.colours.help_motd, config.colours.warning, config.colours.error,
-        config.feed.useragent, config.feed.body_max_chars, config.feed.time_format, config.feed.timezone, config.feed.default_amount,
+        config.feed.useragent, config.feed.body_max_chars, config.feed.time_format, config.feed.timezone, config.feed.default_amount, config.feed.show_feed_title,
         config.twitter.nitter_instances, config.twitter.default_amount,
         config.misc.display_help_logo, config.misc.logging,
         config.motd.enable, config.motd.list, config.motd.version 
@@ -55,7 +55,7 @@ function checkValuesExist() {
         "config.floodprotect.flood_protection", "config.floodprotect.flood_protection_delay",
         "config.errorhandling.error_logging","config.errorhandling.error_channel","config.errorhandling.error_channel_pass",
         "config.colours.date","config.colours.brackets","config.colours.title","config.colours.author","config.colours.body","config.colours.link","config.colours.help_logo","config.colours.help_motd","config.colours.warning","config.colours.error",
-        "config.feed.useragent","config.feed.body_max_chars","config.feed.time_format","config.feed.timezone","config.feed.default_amount",
+        "config.feed.useragent","config.feed.body_max_chars","config.feed.time_format","config.feed.timezone","config.feed.default_amount", "config.feed.show_feed_title",
         "config.twitter.nitter_instances","config.twitter.default_amount",
         "config.misc.display_help_logo","config.misc.logging",
         "config.motd.enable","config.motd.list","config.motd.version"
@@ -72,6 +72,7 @@ function checkValuesExist() {
 
     })
     if (fatalConfigError.has('kill') == true ){
+        timer(10)
         consoleLog('[cvc.checkValuesExist] [FATAL] Config is improperly configured, Mercury can not start')
         sendUpstream('kill')
     } else {
